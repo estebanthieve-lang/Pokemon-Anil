@@ -168,6 +168,11 @@
       "command": "replace_party_with_random_pokedex_safe",
       "timeout_ms": 1500
     },
+    "replace_all_party_with_random_pokedex_safe_live": {
+      "type": "file_command",
+      "command": "replace_all_party_with_random_pokedex_safe",
+      "timeout_ms": 1500
+    },
     "gift_random_pokedex_pokemon_live": {
       "type": "file_command",
       "command": "gift_random_pokedex_pokemon",

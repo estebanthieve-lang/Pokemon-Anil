@@ -86,6 +86,9 @@ module LiveChaosAnil
     when "heal_party"
       enqueue(:type => :heal_party)
       "OK queued heal_party"
+    when "replace_all_party_with_random_pokedex_safe"
+      enqueue(:type => :replace_all_party_with_random_pokedex_safe)
+      "OK queued replace_all_party_with_random_pokedex_safe"
     else
       "ERR unknown_command #{command}"
     end
@@ -127,6 +130,8 @@ module LiveChaosAnil
       add_item(payload[:item], payload[:quantity])
     when :heal_party
       heal_party
+    when :replace_all_party_with_random_pokedex_safe
+      replace_all_party_with_random_pokedex_safe
     end
   rescue => e
     log("command failed: #{e.class}: #{e.message}")
@@ -153,6 +158,48 @@ module LiveChaosAnil
       raise "party is not ready"
     end
     log("party healed")
+  end
+
+  def self.replace_all_party_with_random_pokedex_safe
+    raise "party is not ready" unless defined?($player) && $player && $player.respond_to?(:party)
+    party = $player.party
+    raise "party is empty" if !party || party.empty?
+    species = random_species_pool
+    raise "species data is not ready" if species.empty?
+    changed = 0
+    party.each_with_index do |old_pkmn, index|
+      next unless old_pkmn
+      level = old_pkmn.respond_to?(:level) ? old_pkmn.level : 5
+      level = [[level.to_i, 1].max, 100].min
+      new_species = species[rand(species.length)]
+      party[index] = create_pokemon(new_species, level)
+      changed += 1
+    end
+    log("replaced full party with #{changed} random pokemon")
+  end
+
+  def self.random_species_pool
+    if defined?(GameData::Species) && GameData::Species.respond_to?(:each)
+      pool = []
+      GameData::Species.each do |species_data|
+        id = species_data.respond_to?(:id) ? species_data.id : nil
+        next if id.nil?
+        next if species_data.respond_to?(:egg?) && species_data.egg?
+        next if species_data.respond_to?(:form) && species_data.form.to_i != 0
+        pool << id
+      end
+      return pool
+    end
+    []
+  rescue
+    []
+  end
+
+  def self.create_pokemon(species, level)
+    if defined?(Pokemon)
+      return Pokemon.new(species, level)
+    end
+    raise "Pokemon class is not ready"
   end
 end
 

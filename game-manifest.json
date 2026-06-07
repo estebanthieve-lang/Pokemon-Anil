@@ -3,7 +3,7 @@
   "gameId": "pokemon-anil-live",
   "name": "Pokemon Añil Live",
   "description": "Runtime limpio para conectar Pokemon Añil con una base tipo Tikfinity por HTTP.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "endpoint": "POST http://127.0.0.1:8877/event",
   "updates": {
     "githubRepo": "estebanthieve-lang/Pokemon-Anil",
@@ -186,6 +186,13 @@
       "label": "Cambiar por Pokémon random de Pokédex",
       "type": "game_action",
       "description": "Reemplaza un Pokémon del equipo por una especie aleatoria de la Pokédex, manteniendo nivel parecido. Evita huevos y shinys cuando puede. La especie tiene 98% normal y 2% legendario.",
+      "params": {}
+    },
+    {
+      "id": "replace_all_party_with_random_pokedex_safe_live",
+      "label": "Cambiar todo el equipo random",
+      "type": "game_action",
+      "description": "Reemplaza todos los Pokemon del equipo por especies aleatorias de la Pokedex, manteniendo niveles parecidos. No borra la partida; conviene guardar antes si es una recompensa fuerte.",
       "params": {}
     },
     {
