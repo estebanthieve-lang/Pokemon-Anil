@@ -1,0 +1,198 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8877,
+    "target_window_contains": "Pokemon Anil Live",
+    "focus_before_action": true,
+    "sync_keys_from_mgba": false,
+    "allow_raw_keys": false
+  },
+  "lua_bridge": {
+    "host": "127.0.0.1",
+    "port": 8798,
+    "use_for_input": false
+  },
+  "file_bridge": {
+    "command_file": "POKEMON_ANIL/Pokemon Anil/live_chaos_queue.txt",
+    "use_for_input": true
+  },
+  "queue": {
+    "enabled": true,
+    "max_size": 250,
+    "cooldown_ms": 40
+  },
+  "matching": {
+    "allow_fuzzy_gift_names": true,
+    "max_fuzzy_distance_short": 1,
+    "max_fuzzy_distance_long": 2
+  },
+  "keys": {
+    "a": "c",
+    "b": "x",
+    "c": "z",
+    "start": "enter",
+    "select": "shift",
+    "l": "a",
+    "r": "s",
+    "up": "up",
+    "down": "down",
+    "left": "left",
+    "right": "right"
+  },
+  "actions": {
+    "add_potion_live": {
+      "type": "file_command",
+      "command": "add_item POTION",
+      "timeout_ms": 1500,
+      "aggregate_quantity": true
+    },
+    "remove_potion_live": {
+      "type": "file_command",
+      "command": "remove_item POTION",
+      "timeout_ms": 1500,
+      "aggregate_quantity": true
+    },
+    "add_pokeball_live": {
+      "type": "file_command",
+      "command": "add_item POKEBALL",
+      "timeout_ms": 1500,
+      "aggregate_quantity": true
+    },
+    "remove_pokeball_live": {
+      "type": "file_command",
+      "command": "remove_item POKEBALL",
+      "timeout_ms": 1500,
+      "aggregate_quantity": true
+    },
+    "add_revive_live": {
+      "type": "file_command",
+      "command": "add_item REVIVE",
+      "timeout_ms": 1500,
+      "aggregate_quantity": true
+    },
+    "remove_revive_live": {
+      "type": "file_command",
+      "command": "remove_item REVIVE",
+      "timeout_ms": 1500,
+      "aggregate_quantity": true
+    },
+    "heal_party_live": {
+      "type": "file_command",
+      "command": "heal_party",
+      "timeout_ms": 1500
+    },
+    "party_hp_1_live": {
+      "type": "file_command",
+      "command": "set_party_hp 1",
+      "timeout_ms": 1500
+    },
+    "restore_all_live": {
+      "type": "file_command",
+      "command": "heal_party",
+      "timeout_ms": 1500
+    },
+    "add_random_ability_capsule_live": {
+      "type": "file_command",
+      "command": "add_item RANDOMABILITYCAPSULE",
+      "timeout_ms": 1500
+    },
+    "add_relic_crown_live": {
+      "type": "file_command",
+      "command": "add_item RELICCROWN",
+      "timeout_ms": 1500
+    },
+    "revive_random_pokemon_live": {
+      "type": "file_command",
+      "command": "revive_random_pokemon",
+      "timeout_ms": 1500
+    },
+    "add_master_ball_live": {
+      "type": "file_command",
+      "command": "add_item MASTERBALL",
+      "timeout_ms": 1500
+    },
+    "add_shiny_potion_live": {
+      "type": "file_command",
+      "command": "add_item SHINYZADOR",
+      "timeout_ms": 1500
+    },
+    "next_encounter_legendary_live": {
+      "type": "file_command",
+      "command": "arm_next_legendary",
+      "timeout_ms": 1500
+    },
+    "faint_random_pokemon_live": {
+      "type": "file_command",
+      "command": "faint_random_pokemon",
+      "timeout_ms": 1500
+    },
+    "press_c_three_times_live": {
+      "type": "file_sequence",
+      "commands": [
+        "press C 6",
+        "press C 6",
+        "press C 6"
+      ],
+      "delay_ms": 550
+    },
+    "party_hp_50_percent_live": {
+      "type": "file_command",
+      "command": "set_party_hp_percent 50",
+      "timeout_ms": 1500
+    },
+    "restart_save_live": {
+      "type": "restart_save"
+    },
+    "money_zero_live": {
+      "type": "file_command",
+      "command": "money_zero",
+      "timeout_ms": 1500
+    },
+    "remove_all_pokeballs_live": {
+      "type": "file_command",
+      "command": "remove_all_pokeballs",
+      "timeout_ms": 1500
+    },
+    "force_battle_switch_random_live": {
+      "type": "file_command",
+      "command": "force_battle_switch_random",
+      "timeout_ms": 1500
+    },
+    "shuffle_party_order_live": {
+      "type": "file_command",
+      "command": "shuffle_party_order",
+      "timeout_ms": 1500
+    },
+    "replace_party_with_random_pokedex_safe_live": {
+      "type": "file_command",
+      "command": "replace_party_with_random_pokedex_safe",
+      "timeout_ms": 1500
+    },
+    "gift_random_pokedex_pokemon_live": {
+      "type": "file_command",
+      "command": "gift_random_pokedex_pokemon",
+      "timeout_ms": 1500
+    },
+    "chispazo_exp_live": {
+      "type": "file_command",
+      "command": "add_live_ticket chispazo_exp 1",
+      "timeout_ms": 1500
+    },
+    "ruleta_nivel_live": {
+      "type": "file_command",
+      "command": "add_live_ticket ruleta_nivel 1",
+      "timeout_ms": 1500
+    },
+    "moneda_suerte_live": {
+      "type": "file_command",
+      "command": "add_live_ticket moneda_suerte 1",
+      "timeout_ms": 1500
+    },
+    "abrir_bolsa_live": {
+      "type": "file_command",
+      "command": "open_live_ticket_menu",
+      "timeout_ms": 1500
+    }
+  },
+  "gift_rules": []
+}

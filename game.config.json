@@ -1,0 +1,23 @@
+{
+  "gameId": "pokemon-anil-live",
+  "name": "Pokemon Anil Live",
+  "version": "0.1.1",
+  "saveRoot": "%APPDATA%\\Pokemon Anil Live",
+  "backupRoot": "%APPDATA%\\Pokemon Anil Live\\backups",
+  "updateBackupRoot": "%APPDATA%\\Pokemon Anil Live\\backups\\updates",
+  "protectedPaths": [],
+  "mergeConfigFiles": [
+    "config/actions_anil.json"
+  ],
+  "updatablePaths": [
+    "controller.py",
+    "game-manifest.json",
+    "runtime",
+    "assets",
+    "POKEMON_ANIL",
+    "INICIAR POKEMON ANIL LIVE.cmd",
+    "LEEME - DOBLE CLIC PARA JUGAR.txt",
+    "ACTUALIZAR POKEMON ANIL LIVE.cmd",
+    "game.config.json"
+  ]
+}

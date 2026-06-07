@@ -1,0 +1,58 @@
+POKEMON ANIL LIVE
+
+1. Descomprime la carpeta completa en una ruta corta, por ejemplo:
+   C:\AnilLive
+
+2. Abre:
+   INICIAR POKEMON ANIL LIVE.cmd
+
+3. Se abriran Pokemon Anil Live y el event bus.
+   Deja abierta la ventana negra mientras juegas.
+   Al cerrar el juego, esa ventana sincroniza la partida final y limpia la copia temporal.
+
+No necesitas instalar Python ni configurar archivos.
+
+Para conectarlo a otra aplicacion, usa:
+http://127.0.0.1:8877/manifest
+
+IMPORTANTE SOBRE PARTIDAS
+
+Esta version Live guarda separada del Pokemon Anil normal:
+%APPDATA%\Pokemon Anil Live
+
+Esto evita mezclar progreso con otras carpetas o versiones antiguas.
+
+La partida real vive en:
+%APPDATA%\Pokemon Anil Live\Partida 1.rxdata
+
+Los backups viven en una sola carpeta:
+%APPDATA%\Pokemon Anil Live\backups
+
+Loop de seguridad:
+1. Al abrir INICIAR POKEMON ANIL LIVE.cmd, se prepara la carpeta de AppData.
+2. Si alguna partida quedo en la carpeta del juego, se importa a AppData.
+3. La partida de AppData se copia al juego antes de abrirlo, para que arranque con el progreso correcto.
+4. Si ya existe una partida, se crea una copia de arranque en backups\autosaves.
+5. Mientras el event bus este abierto, vigila los guardados.
+6. Cada vez que el juego guarda y la partida cambia, crea otro backup en backups\autosaves.
+7. Si el juego escribe una partida dentro de su carpeta, el controlador la copia de vuelta a AppData.
+8. La accion manual de backup guarda copias en backups\manual.
+9. Las actualizaciones guardan copias en backups\updates.
+10. Al cerrar el juego, se sincroniza por ultima vez y se borra la copia temporal de la carpeta del juego.
+
+Los autosaves conservan los ultimos 60 backups para no llenar el disco.
+
+ACTUALIZACIONES SEGURAS
+
+No reemplaces esta carpeta a mano si ya tienes una partida.
+
+Para actualizar:
+1. Abre esta carpeta instalada.
+2. Ejecuta ACTUALIZAR POKEMON ANIL LIVE.cmd.
+3. Si el manifest trae GitHub, descarga la ultima version automaticamente.
+4. Si no hay GitHub disponible, te pedira la ruta de una carpeta nueva.
+
+El actualizador valida que sea el mismo juego, crea backup y actualiza archivos del juego.
+No borra tus partidas ni backups.
+
+Las partidas viven en AppData y todos los backups viven en AppData\Pokemon Anil Live\backups.
