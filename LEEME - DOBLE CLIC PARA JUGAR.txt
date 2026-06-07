@@ -56,3 +56,5 @@ El actualizador valida que sea el mismo juego, crea backup y actualiza archivos 
 No borra tus partidas ni backups.
 
 Las partidas viven en AppData y todos los backups viven en AppData\Pokemon Anil Live\backups.
+
+Version 0.1.3: prueba de aviso de actualizacion desde GitHub.
