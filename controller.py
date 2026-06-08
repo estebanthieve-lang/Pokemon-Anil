@@ -623,7 +623,7 @@ def load_mgba_keys():
 
 
 def load_config():
-    config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    config = json.loads(CONFIG_PATH.read_text(encoding="utf-8-sig"))
     if config.get("server", {}).get("sync_keys_from_mgba", True):
         detected = load_mgba_keys()
         if detected:
@@ -641,7 +641,7 @@ def load_manifest():
             "endpoint": "POST http://127.0.0.1:8765/event",
             "actions": [],
         }
-    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8-sig"))
 
 
 def normalize(value):

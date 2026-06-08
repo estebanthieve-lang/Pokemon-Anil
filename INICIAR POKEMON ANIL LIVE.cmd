@@ -17,6 +17,34 @@ if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%"
 if not exist "%BACKUP_DIR%\autosaves" mkdir "%BACKUP_DIR%\autosaves"
 if not exist "%BACKUP_DIR%\manual" mkdir "%BACKUP_DIR%\manual"
 if not exist "%BACKUP_DIR%\updates" mkdir "%BACKUP_DIR%\updates"
+if not exist "%ROOT%logs" mkdir "%ROOT%logs"
+
+if not exist "%PYTHON%" (
+  echo.
+  echo ERROR: No existe Python portable:
+  echo "%PYTHON%"
+  echo Descarga de nuevo el ZIP completo del repositorio.
+  pause
+  exit /b 1
+)
+
+if not exist "%ROOT%controller.py" (
+  echo.
+  echo ERROR: Falta controller.py en:
+  echo "%ROOT%"
+  echo Descarga de nuevo el ZIP completo del repositorio.
+  pause
+  exit /b 1
+)
+
+if not exist "%CONFIG%" (
+  echo.
+  echo ERROR: Falta la config:
+  echo "%CONFIG%"
+  echo Descarga de nuevo el ZIP completo del repositorio.
+  pause
+  exit /b 1
+)
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%runtime\sincronizar_partidas.ps1" -GameDir "%GAME_DIR%" -SaveDir "%SAVE_DIR%"
 if errorlevel 1 (
@@ -31,10 +59,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$conn = Get-NetTCPConnec
 
 type nul > "%GAME_DIR%\live_chaos_queue.txt"
 
-start "Pokemon Anil Live" /MIN powershell -NoProfile -ExecutionPolicy Bypass -Command "$env:POKEMON_ANIL_LIVE_CONFIG='%CONFIG%'; Set-Location '%ROOT%'; & '%PYTHON%' '.\controller.py' --serve"
+start "Pokemon Anil Live - Event Bus" cmd /k call "%ROOT%runtime\iniciar_event_bus.cmd"
 
 echo.
 echo Pokemon Anil Live y el event bus estan abiertos.
+echo Manifest: http://127.0.0.1:8877/manifest
 echo Deja esta ventana abierta para sincronizar la partida al cerrar.
 
 start "Pokemon Anil Live" /D "%GAME_DIR%" /WAIT "%GAME_DIR%\Game.exe"
