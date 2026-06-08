@@ -9,15 +9,35 @@ $ErrorActionPreference = "Stop"
 
 function Resolve-LocalPath([string]$root, [string]$relative) {
   $clean = $relative -replace "/", "\"
-  return [System.IO.Path]::GetFullPath((Join-Path $root $clean))
+  return [System.IO.Path]::GetFullPath((Join-Path (Normalize-InputPath $root) $clean))
 }
 
 function Resolve-AppDataPath([string]$path) {
   return $path.Replace("%APPDATA%", $env:APPDATA)
 }
 
+function Normalize-InputPath([string]$path) {
+  return ($path -replace '"', "").Trim()
+}
+
 function Read-JsonFile([string]$path) {
   return Get-Content -Raw -LiteralPath $path | ConvertFrom-Json
+}
+
+function Read-JsonFromUrl([string]$url) {
+  $response = Invoke-WebRequest -Uri $url -UseBasicParsing
+  $json = [string]$response.Content
+  return $json.Trim([char]0xFEFF) | ConvertFrom-Json
+}
+
+function Get-LatestManifest($manifest) {
+  $latestUrl = [string]$manifest.updates.latestManifestUrl
+  if (-not $latestUrl) { return $manifest }
+
+  Write-Host ""
+  Write-Host "Leyendo manifest remoto:" -ForegroundColor Cyan
+  Write-Host "  $latestUrl"
+  return Read-JsonFromUrl $latestUrl
 }
 
 function Backup-ExistingPath([string]$target, [string]$backupRoot, [string]$relative) {
@@ -61,7 +81,7 @@ function Merge-ActionsConfig([string]$currentPath, [string]$incomingPath) {
   $current | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $currentPath -Encoding UTF8
 }
 
-$installPath = [System.IO.Path]::GetFullPath($InstallRoot)
+$installPath = [System.IO.Path]::GetFullPath((Normalize-InputPath $InstallRoot))
 $configPath = Join-Path $installPath "game.config.json"
 if (-not (Test-Path -LiteralPath $configPath)) {
   throw "Falta game.config.json en la instalacion actual."
@@ -72,14 +92,12 @@ $currentManifest = if (Test-Path -LiteralPath $currentManifestPath) { Read-JsonF
 $tempUpdateRoot = $null
 
 if (-not $UpdateRoot) {
-  $downloadUrl = [string]$currentManifest.updates.downloadUrl
-  if (-not $downloadUrl -and $currentManifest.updates.githubRepo) {
-    $downloadUrl = "https://github.com/$($currentManifest.updates.githubRepo)/archive/refs/heads/main.zip"
-  }
+  $latestManifest = Get-LatestManifest $currentManifest
+  $downloadUrl = [string]$latestManifest.updates.downloadUrl
 
   if ($downloadUrl) {
     Write-Host ""
-    Write-Host "Descargando actualizacion desde GitHub:" -ForegroundColor Cyan
+    Write-Host "Descargando paquete liviano de actualizacion:" -ForegroundColor Cyan
     Write-Host "  $downloadUrl"
     $tempUpdateRoot = Join-Path $env:TEMP ("pokemon-anil-update-" + [guid]::NewGuid().ToString("N"))
     $zipPath = Join-Path $tempUpdateRoot "update.zip"

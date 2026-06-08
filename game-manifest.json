@@ -9,7 +9,7 @@
     "githubRepo": "estebanthieve-lang/Pokemon-Anil",
     "latestManifestUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/game-manifest.json",
     "releaseUrl": "https://github.com/estebanthieve-lang/Pokemon-Anil/releases/latest",
-    "downloadUrl": "https://github.com/estebanthieve-lang/Pokemon-Anil/archive/refs/heads/main.zip"
+    "downloadUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/updates/pokemon-anil-update-0.1.3.zip"
   },
   "eventBus": {
     "protocol": "http",
