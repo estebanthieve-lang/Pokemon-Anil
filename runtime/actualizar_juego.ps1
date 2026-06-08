@@ -78,7 +78,9 @@ function Merge-ActionsConfig([string]$currentPath, [string]$incomingPath) {
     }
   }
 
-  $current | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $currentPath -Encoding UTF8
+  $json = $current | ConvertTo-Json -Depth 100
+  $encoding = [System.Text.UTF8Encoding]::new($false)
+  [System.IO.File]::WriteAllText($currentPath, $json, $encoding)
 }
 
 $installPath = [System.IO.Path]::GetFullPath((Normalize-InputPath $InstallRoot))
