@@ -19,6 +19,13 @@ if not exist "%BACKUP_DIR%\manual" mkdir "%BACKUP_DIR%\manual"
 if not exist "%BACKUP_DIR%\updates" mkdir "%BACKUP_DIR%\updates"
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%runtime\sincronizar_partidas.ps1" -GameDir "%GAME_DIR%" -SaveDir "%SAVE_DIR%"
+if errorlevel 1 (
+  echo.
+  echo ERROR: No se pudo sincronizar la partida al iniciar.
+  echo No se tocara ninguna partida. Cierra esta ventana y avisa el error.
+  pause
+  exit /b 1
+)
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$conn = Get-NetTCPConnection -LocalPort 8877 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1; if ($conn) { Stop-Process -Id $conn.OwningProcess -Force }"
 
@@ -35,7 +42,14 @@ start "Pokemon Anil Live" /D "%GAME_DIR%" /WAIT "%GAME_DIR%\Game.exe"
 echo.
 echo Pokemon Anil se cerro. Sincronizando partida final...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%runtime\sincronizar_partidas.ps1" -GameDir "%GAME_DIR%" -SaveDir "%SAVE_DIR%"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-ChildItem -LiteralPath '%GAME_DIR%' -Filter 'Partida *.rxdata' -File -ErrorAction SilentlyContinue | Remove-Item -Force"
+if errorlevel 1 (
+  echo.
+  echo ERROR: No se pudo sincronizar la partida final.
+  echo Por seguridad NO se limpiaran partidas temporales de la carpeta del juego.
+  pause
+  exit /b 1
+)
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$stamp=Get-Date -Format 'yyyyMMdd_HHmmss'; $cleanupBackup=Join-Path '%BACKUP_DIR%\autosaves' ('cleanup_' + $stamp); $saves=Get-ChildItem -LiteralPath '%GAME_DIR%' -Filter 'Partida *.rxdata' -File -ErrorAction SilentlyContinue; if ($saves) { New-Item -ItemType Directory -Force -Path $cleanupBackup | Out-Null; $saves | Copy-Item -Destination $cleanupBackup -Force; $saves | Remove-Item -Force }"
 echo Partida protegida en "%SAVE_DIR%".
 timeout /t 3 /nobreak >nul
 exit
