@@ -1,4 +1,5 @@
 *.rxdata
+!POKEMON_ANIL/Pokemon Anil/Data/*.rxdata
 *.bak
 *.tmp
 *.log
