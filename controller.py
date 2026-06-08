@@ -11,6 +11,7 @@ import subprocess
 import threading
 import time
 import unicodedata
+import html
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -28,6 +29,9 @@ LOG_PATH = ROOT / "logs" / "events.jsonl"
 LUA_RESULT_PATH = ROOT / "logs" / "lua_socket_events.jsonl"
 MGBA_CONFIG_PATH = Path.home() / "AppData" / "Roaming" / "mGBA" / "config.ini"
 PORTABLE_MGBA_CONFIG_PATH = ROOT / "config" / "mgba_config.ini"
+TEAM_OVERLAY_ROOT = Path(os.environ.get("APPDATA", "")) / "Pokemon Anil Live" / "team_overlay"
+TEAM_JSON_PATH = TEAM_OVERLAY_ROOT / "team.json"
+TEAM_SPRITE_DIR = TEAM_OVERLAY_ROOT / "team_sprites"
 
 ACTION_QUEUE = queue.Queue()
 QUEUE_LOCK = threading.Lock()
@@ -499,6 +503,224 @@ PANEL_HTML = """<!doctype html>
     loadGameLog();
     setInterval(loadQueue, 1000);
     setInterval(loadGameLog, 1000);
+  </script>
+</body>
+</html>
+"""
+
+TEAM_OVERLAY_HTML = """<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pokemon Anil Live Team Overlay</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+      font-family: Segoe UI, Arial, sans-serif;
+    }
+    body { display: grid; place-items: center; }
+    .overlay {
+      width: min(960px, 100vw);
+      aspect-ratio: 16 / 9;
+      position: relative;
+      background: transparent;
+    }
+    .slot {
+      position: absolute;
+      width: 40%;
+      height: 19%;
+      border: 3px solid rgba(210,255,224,.95);
+      background: linear-gradient(180deg, rgba(4,158,53,.96), rgba(3,94,35,.94));
+      box-shadow: 0 5px 0 rgba(0,0,0,.50), inset 0 0 0 2px rgba(0,50,18,.75);
+      color: #f7fbff;
+      padding: 7px 12px 7px 76px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: 30px 18px 24px;
+      gap: 0 8px;
+      text-shadow: 2px 2px 0 #17242b;
+    }
+    .slot:nth-child(1) { left: 3%; top: 5%; }
+    .slot:nth-child(2) { right: 3%; top: 10%; }
+    .slot:nth-child(3) { left: 3%; top: 31%; }
+    .slot:nth-child(4) { right: 3%; top: 36%; }
+    .slot:nth-child(5) { left: 3%; top: 57%; }
+    .slot:nth-child(6) { right: 3%; top: 62%; }
+    .slot.empty { opacity: .38; filter: grayscale(1); }
+    .slot.fainted {
+      background: linear-gradient(180deg, rgba(83,91,93,.96), rgba(38,43,45,.94));
+      border-color: rgba(230,230,230,.8);
+    }
+    .ball {
+      position: absolute;
+      left: 9px;
+      top: 12px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(#e95d4f 0 45%, #25292c 46% 53%, #f7f7f7 54% 100%);
+      border: 3px solid #1b2024;
+      box-shadow: 2px 2px 0 rgba(0,0,0,.35);
+    }
+    .ball::after {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #f7f7f7;
+      border: 3px solid #1b2024;
+    }
+    .sprite {
+      position: absolute;
+      left: 28px;
+      top: -8px;
+      width: 72px;
+      height: 72px;
+      image-rendering: pixelated;
+      object-fit: contain;
+      filter: drop-shadow(3px 4px 0 rgba(0,0,0,.45));
+    }
+    .name {
+      grid-column: 1 / 2;
+      font-weight: 900;
+      font-size: clamp(18px, 3.15vw, 31px);
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .gender {
+      grid-column: 2 / 3;
+      font-weight: 900;
+      font-size: clamp(18px, 2.7vw, 27px);
+      line-height: 1;
+      color: #ff8fca;
+    }
+    .gender.male { color: #72b6ff; }
+    .meta {
+      grid-column: 1 / 2;
+      font-weight: 800;
+      font-size: clamp(13px, 2vw, 20px);
+      line-height: 1;
+    }
+    .hpbar {
+      grid-column: 1 / 3;
+      align-self: center;
+      height: 12px;
+      border: 3px solid #111;
+      background: #202020;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
+    }
+    .hpfill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #74ff62, #26d14a);
+    }
+    .hpfill.mid { background: linear-gradient(90deg, #ffe45c, #f1a91f); }
+    .hpfill.low { background: linear-gradient(90deg, #ff6961, #d92828); }
+    .hptext {
+      grid-column: 1 / 3;
+      justify-self: end;
+      font-weight: 900;
+      font-size: clamp(16px, 2.7vw, 27px);
+      line-height: 1;
+    }
+    .status {
+      position: absolute;
+      left: 72px;
+      bottom: 8px;
+      font-size: clamp(10px, 1.5vw, 15px);
+      font-weight: 900;
+      color: #ffe66b;
+      text-shadow: 2px 2px 0 #17242b;
+    }
+    .offline {
+      position: absolute;
+      inset: auto 20px 20px 20px;
+      padding: 12px 16px;
+      border: 2px solid rgba(255,255,255,.7);
+      background: rgba(15,20,24,.78);
+      color: white;
+      font-weight: 800;
+      display: none;
+    }
+    .offline.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="overlay" id="team"></main>
+  <div class="offline" id="offline">Pokemon Anil Live desconectado</div>
+  <script>
+    const teamEl = document.getElementById('team');
+    const offlineEl = document.getElementById('offline');
+    const emptyTeam = Array.from({ length: 6 }, (_, i) => ({ slot: i + 1, empty: true, hp: 0, totalhp: 0 }));
+
+    function clean(value) {
+      return String(value || '').replace(/[<>&]/g, '');
+    }
+    function pct(mon) {
+      const hp = Number(mon.hp || 0);
+      const total = Math.max(1, Number(mon.totalhp || 0));
+      return Math.max(0, Math.min(100, Math.round((hp / total) * 100)));
+    }
+    function genderText(gender) {
+      if (gender === 'male') return '♂';
+      if (gender === 'female') return '♀';
+      return '';
+    }
+    function render(team) {
+      const sorted = [...emptyTeam];
+      for (const mon of team || []) {
+        const slot = Number(mon.slot || 0);
+        if (slot >= 1 && slot <= 6) sorted[slot - 1] = mon;
+      }
+      const now = Date.now();
+      teamEl.innerHTML = sorted.map((mon, index) => {
+        const value = pct(mon);
+        const hpClass = value <= 25 ? 'low' : value <= 50 ? 'mid' : '';
+        const sprite = mon.sprite || `/team-sprite/${index + 1}.png`;
+        const name = mon.empty ? 'VACIO' : (mon.name || mon.species || 'POKEMON');
+        const status = mon.empty ? '' : ((mon.status && mon.status !== 'OK') ? mon.status : '');
+        return `
+          <section class="slot ${mon.empty ? 'empty' : ''} ${mon.fainted ? 'fainted' : ''}">
+            <div class="ball"></div>
+            <img class="sprite" src="${sprite}?t=${now}" alt="">
+            <div class="name">${clean(name)}</div>
+            <div class="gender ${mon.gender === 'male' ? 'male' : ''}">${genderText(mon.gender)}</div>
+            <div class="meta">${mon.empty ? '' : `Nv.${mon.level || 0}`}</div>
+            <div class="hpbar"><div class="hpfill ${hpClass}" style="width:${value}%"></div></div>
+            <div class="hptext">${mon.empty ? '' : `${mon.hp || 0} / ${mon.totalhp || 0}`}</div>
+            <div class="status">${clean(status)}</div>
+          </section>`;
+      }).join('');
+    }
+    async function refresh() {
+      try {
+        const response = await fetch('/team.json?t=' + Date.now(), { cache: 'no-store' });
+        const payload = await response.json();
+        if (!payload.ok) throw new Error('bad team payload');
+        offlineEl.classList.remove('show');
+        render(payload.team || []);
+      } catch (error) {
+        offlineEl.classList.add('show');
+        render([]);
+      }
+    }
+    render([]);
+    refresh();
+    setInterval(refresh, 1000);
   </script>
 </body>
 </html>
@@ -1297,6 +1519,17 @@ class ChaosHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _send_bytes(self, status, body, content_type, cache=False):
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self._send_cors_headers()
+        if not cache:
+            self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+            self.send_header("Pragma", "no-cache")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_OPTIONS(self):
         self.send_response(204)
         self._send_cors_headers()
@@ -1306,13 +1539,36 @@ class ChaosHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path in ("/", "/panel"):
             body = PANEL_HTML.encode("utf-8")
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
-            self.send_header("Pragma", "no-cache")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
+            self._send_bytes(200, body, "text/html; charset=utf-8")
+            return
+        if parsed.path == "/team-overlay":
+            body = TEAM_OVERLAY_HTML.encode("utf-8")
+            self._send_bytes(200, body, "text/html; charset=utf-8")
+            return
+        if parsed.path == "/team.json":
+            if TEAM_JSON_PATH.exists():
+                body = TEAM_JSON_PATH.read_bytes()
+                self._send_bytes(200, body, "application/json; charset=utf-8")
+            else:
+                self._send_json(200, {
+                    "ok": False,
+                    "error": "team_not_ready",
+                    "team": [],
+                    "path": str(TEAM_JSON_PATH),
+                })
+            return
+        if parsed.path.startswith("/team-sprite/") and parsed.path.endswith(".png"):
+            name = Path(parsed.path).name
+            if name.startswith("slot") and name[4:-4].isdigit():
+                sprite_path = TEAM_SPRITE_DIR / name
+            elif name[:-4].isdigit():
+                sprite_path = TEAM_SPRITE_DIR / f"slot{name[:-4]}.png"
+            else:
+                sprite_path = None
+            if sprite_path and sprite_path.exists():
+                self._send_bytes(200, sprite_path.read_bytes(), "image/png", cache=False)
+            else:
+                self._send_json(404, {"ok": False, "error": "sprite_not_found"})
             return
         if parsed.path == "/health":
             self._send_json(200, {"ok": True, "service": "pokemon_anil_live"})

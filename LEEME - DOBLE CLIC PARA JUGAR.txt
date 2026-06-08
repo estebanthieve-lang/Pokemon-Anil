@@ -18,6 +18,10 @@ http://127.0.0.1:8877/manifest
 Si quieres probar que el manifest esta abierto:
 ABRIR MANIFEST LIVE.cmd
 
+Overlay de equipo para OBS/base:
+http://127.0.0.1:8877/team-overlay
+http://127.0.0.1:8877/team.json
+
 IMPORTANTE SOBRE PARTIDAS
 
 Esta version Live guarda separada del Pokemon Anil normal:
