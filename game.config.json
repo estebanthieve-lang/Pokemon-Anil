@@ -18,6 +18,9 @@
     "INICIAR POKEMON ANIL LIVE.cmd",
     "LEEME - DOBLE CLIC PARA JUGAR.txt",
     "ACTUALIZAR POKEMON ANIL LIVE.cmd",
+    "ABRIR CARPETA DE PARTIDAS LIVE.cmd",
+    "RECUPERAR PARTIDAS GUARDADAS.cmd",
+    "MeterPartidasGuardadas",
     "game.config.json"
   ]
 }

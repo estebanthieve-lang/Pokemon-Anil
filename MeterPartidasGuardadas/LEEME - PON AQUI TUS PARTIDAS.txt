@@ -1,0 +1,10 @@
+Pon aqui tus archivos .rxdata de partidas.
+
+Luego vuelve a la carpeta principal y abre:
+RECUPERAR PARTIDAS GUARDADAS.cmd
+
+El recuperador NO reemplaza partidas existentes.
+Si ya existe Partida 1.rxdata, la siguiente entra como Partida 2.rxdata, luego Partida 3.rxdata, etc.
+
+Las partidas Live reales quedan en:
+%APPDATA%\Pokemon Anil Live
