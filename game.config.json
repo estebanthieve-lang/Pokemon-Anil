@@ -1,7 +1,7 @@
 {
   "gameId": "pokemon-anil-live",
   "name": "Pokemon Anil Live",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "saveRoot": "%APPDATA%\\Pokemon Anil Live",
   "backupRoot": "%APPDATA%\\Pokemon Anil Live\\backups",
   "updateBackupRoot": "%APPDATA%\\Pokemon Anil Live\\backups\\updates",
@@ -13,7 +13,6 @@
     "controller.py",
     "game-manifest.json",
     "runtime",
-    "assets",
     "POKEMON_ANIL",
     "INICIAR POKEMON ANIL LIVE.cmd",
     "ABRIR MANIFEST LIVE.cmd",

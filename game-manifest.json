@@ -3,13 +3,13 @@
   "gameId": "pokemon-anil-live",
   "name": "Pokemon AÃ±il Live",
   "description": "Runtime limpio para conectar Pokemon AÃ±il con una base tipo Tikfinity por HTTP.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "endpoint": "POST http://127.0.0.1:8877/event",
   "updates": {
     "githubRepo": "estebanthieve-lang/Pokemon-Anil",
     "latestManifestUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/game-manifest.json",
     "releaseUrl": "https://github.com/estebanthieve-lang/Pokemon-Anil/releases/latest",
-    "downloadUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/updates/pokemon-anil-update-0.1.5.zip"
+    "downloadUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/updates/pokemon-anil-update-0.1.6.zip"
   },
   "eventBus": {
     "protocol": "http",
@@ -122,7 +122,7 @@
       "id": "next_encounter_legendary_live",
       "label": "Encuentro legendario ahora",
       "type": "game_action",
-      "description": "Inicia o arma un combate con un legendario aleatorio. Si el juego esta ocupado, queda en cola y el proximo encuentro valido sera legendario.",
+      "description": "Inicia o arma un combate con un legendario aleatorio. Funciona tambien con el modo random: si el juego cambia la especie, se vuelve a forzar legendario al crear el Pokemon.",
       "params": {}
     },
     {
