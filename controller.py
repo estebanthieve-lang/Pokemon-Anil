@@ -32,6 +32,7 @@ PORTABLE_MGBA_CONFIG_PATH = ROOT / "config" / "mgba_config.ini"
 TEAM_OVERLAY_ROOT = Path(os.environ.get("APPDATA", "")) / "Pokemon Anil Live" / "team_overlay"
 TEAM_JSON_PATH = TEAM_OVERLAY_ROOT / "team.json"
 TEAM_SPRITE_DIR = TEAM_OVERLAY_ROOT / "team_sprites"
+PARTY_UI_DIR = ROOT / "POKEMON_ANIL" / "Pokemon Anil" / "Graphics" / "UI" / "Bag Screen with Party"
 
 ACTION_QUEUE = queue.Queue()
 QUEUE_LOCK = threading.Lock()
@@ -522,181 +523,174 @@ TEAM_OVERLAY_HTML = """<!doctype html>
       margin: 0;
       overflow: hidden;
       background: transparent;
-      font-family: Segoe UI, Arial, sans-serif;
     }
-    body { display: grid; place-items: center; }
-    .overlay {
-      width: min(1120px, 100vw);
-      height: min(620px, 100vh);
+    body {
+      display: grid;
+      place-items: center;
+      font-family: "Arial Black", Impact, Arial, sans-serif;
+    }
+    .party {
+      width: min(440px, 100vw);
+      aspect-ratio: 440 / 600;
       position: relative;
       background: transparent;
+      transform-origin: center;
     }
     .slot {
       position: absolute;
-      width: 42%;
-      height: 19.5%;
-      border: 3px solid rgba(210,255,224,.95);
-      background: linear-gradient(180deg, rgba(4,158,53,.96), rgba(3,94,35,.94));
-      box-shadow: 0 5px 0 rgba(0,0,0,.50), inset 0 0 0 2px rgba(0,50,18,.75);
-      color: #f7fbff;
-      padding: 10px 14px 9px 112px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      grid-template-rows: 34px 22px 16px 25px;
-      gap: 0 10px;
-      text-shadow: 2px 2px 0 #17242b;
-      overflow: visible;
-    }
-    .slot:nth-child(1) { left: 2.2%; top: 6%; }
-    .slot:nth-child(2) { right: 2.2%; top: 12%; }
-    .slot:nth-child(3) { left: 2.2%; top: 36%; }
-    .slot:nth-child(4) { right: 2.2%; top: 42%; }
-    .slot:nth-child(5) { left: 2.2%; top: 66%; }
-    .slot:nth-child(6) { right: 2.2%; top: 72%; }
-    .slot.empty { opacity: .38; filter: grayscale(1); }
-    .slot.fainted {
-      background: linear-gradient(180deg, rgba(83,91,93,.96), rgba(38,43,45,.94));
-      border-color: rgba(230,230,230,.8);
-    }
-    .ball {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: linear-gradient(#e95d4f 0 45%, #25292c 46% 53%, #f7f7f7 54% 100%);
-      border: 3px solid #1b2024;
-      box-shadow: 2px 2px 0 rgba(0,0,0,.35);
-    }
-    .ball::after {
-      content: "";
-      position: absolute;
-      left: 16px;
-      top: 16px;
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: #f7f7f7;
-      border: 3px solid #1b2024;
-    }
-    .sprite {
-      position: absolute;
-      left: 50px;
-      top: 50%;
-      transform: translateY(-54%);
-      width: 76px;
-      height: 76px;
+      width: 50%;
+      height: 33.3333%;
+      background-image: url('/party-ui/ptpanel_rect_desel.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
       image-rendering: pixelated;
-      object-fit: contain;
-      filter: drop-shadow(3px 4px 0 rgba(0,0,0,.45));
-      z-index: 2;
+      overflow: visible;
+      color: #f8f8f8;
+      text-shadow: 2px 2px 0 #080808, -1px -1px 0 #080808, 1px -1px 0 #080808, -1px 1px 0 #080808;
     }
-    .name {
-      grid-column: 1 / 2;
-      font-weight: 900;
-      font-size: clamp(17px, 2.7vw, 30px);
-      line-height: 1;
-      letter-spacing: 0;
-      white-space: nowrap;
+    .slot.empty {
+      background-image: url('/party-ui/ptpanel_blank.png');
+      opacity: .88;
+    }
+    .slot.fainted { background-image: url('/party-ui/ptpanel_rect_faint.png'); }
+    .slot:nth-child(1) { left: 0; top: 0; }
+    .slot:nth-child(2) { left: 50%; top: 0; }
+    .slot:nth-child(3) { left: 0; top: 33.3333%; }
+    .slot:nth-child(4) { left: 50%; top: 33.3333%; }
+    .slot:nth-child(5) { left: 0; top: 66.6666%; }
+    .slot:nth-child(6) { left: 50%; top: 66.6666%; }
+    .sprite-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 128px;
+      height: 128px;
       overflow: hidden;
-      text-overflow: ellipsis;
-      min-width: 0;
+      z-index: 3;
+    }
+    .sprite-frame img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 256px;
+      height: 128px;
+      image-rendering: pixelated;
+      object-fit: none;
+    }
+    .level {
+      position: absolute;
+      left: 68px;
+      top: 20px;
+      display: flex;
+      align-items: flex-end;
+      gap: 1px;
+      line-height: 1;
+      z-index: 4;
+    }
+    .lv-label {
+      color: #e4d33f;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+    .lv-number {
+      color: white;
+      font-size: 52px;
+      letter-spacing: 0;
+      transform: translateY(2px);
     }
     .gender {
-      grid-column: 2 / 3;
-      font-weight: 900;
-      font-size: clamp(14px, 2vw, 20px);
+      position: absolute;
+      right: 24px;
+      top: 44px;
+      font-size: 42px;
       line-height: 1;
-      color: #ff8fca;
+      z-index: 4;
     }
-    .gender.male { color: #72b6ff; }
-    .meta {
-      grid-column: 1 / 2;
-      font-weight: 800;
-      font-size: clamp(12px, 1.8vw, 18px);
-      line-height: 1;
+    .gender.male { color: #52a7ff; }
+    .gender.female { color: #ff73c8; }
+    .shiny-star {
+      position: absolute;
+      right: 38px;
+      top: 88px;
+      width: 28px;
+      height: 32px;
+      color: #ff0f22;
+      font-size: 42px;
+      line-height: 24px;
+      transform: rotate(45deg);
+      z-index: 4;
     }
     .hpbar {
-      grid-column: 1 / 3;
-      align-self: center;
-      height: 12px;
-      border: 3px solid #111;
-      background: #202020;
-      border-radius: 999px;
-      overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
+      position: absolute;
+      left: 12px;
+      top: 120px;
+      width: 196px;
+      height: 24px;
+      background-image: url('/party-ui/overlay_hp_back.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      padding: 6px 8px 6px 8px;
+      z-index: 5;
     }
+    .slot.fainted .hpbar { background-image: url('/party-ui/overlay_hp_back.png'); }
     .hpfill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #74ff62, #26d14a);
+      background: #39ef44;
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.28);
     }
-    .hpfill.mid { background: linear-gradient(90deg, #ffe45c, #f1a91f); }
-    .hpfill.low { background: linear-gradient(90deg, #ff6961, #d92828); }
+    .hpfill.mid { background: #f6d338; }
+    .hpfill.low { background: #e83b31; }
     .hptext {
-      grid-column: 1 / 3;
-      justify-self: end;
-      font-weight: 900;
-      font-size: clamp(15px, 2.35vw, 25px);
-      line-height: 1;
-    }
-    .status {
       position: absolute;
-      left: 72px;
-      bottom: 8px;
-      font-size: clamp(10px, 1.5vw, 15px);
-      font-weight: 900;
-      color: #ffe66b;
-      text-shadow: 2px 2px 0 #17242b;
+      left: 0;
+      top: 148px;
+      width: 220px;
+      text-align: center;
+      font-size: 54px;
+      line-height: 1;
+      letter-spacing: 0;
+      z-index: 6;
     }
     .offline {
       position: absolute;
-      inset: auto 24px 24px 24px;
-      padding: 12px 16px;
-      border: 2px solid rgba(255,255,255,.7);
-      background: rgba(15,20,24,.78);
+      left: 0;
+      right: 0;
+      bottom: -34px;
       color: white;
-      font-weight: 800;
+      background: rgba(0,0,0,.74);
+      border: 2px solid rgba(255,255,255,.8);
+      padding: 6px 10px;
+      font: 700 14px Arial, sans-serif;
       display: none;
+      text-shadow: none;
     }
     .offline.show { display: block; }
-    @media (max-width: 720px) {
-      .overlay { width: 100vw; height: 100vh; }
-      .slot {
-        width: 47%;
-        padding-left: 88px;
-        grid-template-rows: 28px 19px 14px 22px;
-      }
-      .ball { width: 44px; height: 44px; }
-      .ball::after { left: 12px; top: 12px; }
-      .sprite { left: 38px; width: 64px; height: 64px; }
+    @media (min-width: 441px) {
+      .party { width: 440px; height: 600px; }
     }
   </style>
 </head>
 <body>
-  <main class="overlay" id="team"></main>
-  <div class="offline" id="offline">Pokemon Anil Live desconectado</div>
+  <main class="party" id="team"></main>
   <script>
     const teamEl = document.getElementById('team');
-    const offlineEl = document.getElementById('offline');
     const emptyTeam = Array.from({ length: 6 }, (_, i) => ({ slot: i + 1, empty: true, hp: 0, totalhp: 0 }));
 
-    function clean(value) {
-      return String(value || '').replace(/[<>&]/g, '');
-    }
     function pct(mon) {
       const hp = Number(mon.hp || 0);
       const total = Math.max(1, Number(mon.totalhp || 0));
       return Math.max(0, Math.min(100, Math.round((hp / total) * 100)));
     }
-    function genderText(gender) {
-      if (gender === 'male') return 'M';
-      if (gender === 'female') return 'F';
+    function clean(value) {
+      return String(value || '').replace(/[<>&]/g, '');
+    }
+    function genderMark(mon) {
+      if (mon.gender === 'male') return '<span class="gender male">?</span>';
+      if (mon.gender === 'female') return '<span class="gender female">?</span>';
       return '';
     }
-    function render(team) {
+    function render(team, offlineText = '') {
       const sorted = [...emptyTeam];
       for (const mon of team || []) {
         const slot = Number(mon.slot || 0);
@@ -704,37 +698,32 @@ TEAM_OVERLAY_HTML = """<!doctype html>
       }
       const now = Date.now();
       teamEl.innerHTML = sorted.map((mon, index) => {
+        const empty = !!mon.empty;
         const value = pct(mon);
         const hpClass = value <= 25 ? 'low' : value <= 50 ? 'mid' : '';
+        const fainted = !empty && (!!mon.fainted || Number(mon.hp || 0) <= 0);
         const sprite = mon.sprite || `/team-sprite/${index + 1}.png`;
-        const name = mon.empty ? 'VACIO' : (mon.name || mon.species || 'POKEMON');
-        const status = mon.empty ? '' : ((mon.status && mon.status !== 'OK') ? mon.status : '');
         return `
-          <section class="slot ${mon.empty ? 'empty' : ''} ${mon.fainted ? 'fainted' : ''}">
-            <div class="ball"></div>
-            <img class="sprite" src="${sprite}?t=${now}" alt="">
-            <div class="name">${clean(name)}</div>
-            <div class="gender ${mon.gender === 'male' ? 'male' : ''}">${genderText(mon.gender)}</div>
-            <div class="meta">${mon.empty ? '' : `Nv.${mon.level || 0}`}</div>
-            <div class="hpbar"><div class="hpfill ${hpClass}" style="width:${value}%"></div></div>
-            <div class="hptext">${mon.empty ? '' : `${mon.hp || 0} / ${mon.totalhp || 0}`}</div>
-            <div class="status">${clean(status)}</div>
+          <section class="slot ${empty ? 'empty' : ''} ${fainted ? 'fainted' : ''}">
+            ${empty ? '' : `<div class="sprite-frame"><img src="${sprite}?t=${now}" alt=""></div>`}
+            ${empty ? '' : `<div class="level"><span class="lv-label">Nv.</span><span class="lv-number">${clean(mon.level || 0)}</span></div>`}
+            ${empty ? '' : genderMark(mon)}
+            ${!empty && mon.shiny ? '<div class="shiny-star">?</div>' : ''}
+            ${empty ? '' : `<div class="hpbar"><div class="hpfill ${hpClass}" style="width:${value}%"></div></div>`}
+            ${empty ? '' : `<div class="hptext">${clean(mon.hp || 0)} / ${clean(mon.totalhp || 0)}</div>`}
           </section>`;
-      }).join('');
+      }).join('') + `<div class="offline ${offlineText ? 'show' : ''}">${clean(offlineText)}</div>`;
     }
     async function refresh() {
       try {
         const response = await fetch('/team.json?t=' + Date.now(), { cache: 'no-store' });
         const payload = await response.json();
         if (!payload.ok) throw new Error(payload.error || 'bad team payload');
-        offlineEl.classList.remove('show');
         render(payload.team || []);
       } catch (error) {
-        offlineEl.classList.add('show');
-        offlineEl.textContent = error.message === 'team_not_ready'
-          ? 'Abre una partida en Pokemon Anil Live para mostrar el equipo'
-          : 'Pokemon Anil Live desconectado';
-        render([]);
+        render([], error.message === 'team_not_ready'
+          ? 'Abre una partida en Pokemon Anil Live'
+          : 'Pokemon Anil Live desconectado');
       }
     }
     render([]);
@@ -744,7 +733,6 @@ TEAM_OVERLAY_HTML = """<!doctype html>
 </body>
 </html>
 """
-
 
 VK = {
     "backspace": 0x08,
@@ -1588,6 +1576,21 @@ class ChaosHandler(BaseHTTPRequestHandler):
                 self._send_bytes(200, sprite_path.read_bytes(), "image/png", cache=False)
             else:
                 self._send_json(404, {"ok": False, "error": "sprite_not_found"})
+            return
+        if parsed.path.startswith("/party-ui/") and parsed.path.endswith(".png"):
+            name = Path(parsed.path).name
+            allowed = {
+                "ptpanel_rect_desel.png",
+                "ptpanel_rect_faint.png",
+                "ptpanel_blank.png",
+                "overlay_hp_back.png",
+                "overlay_hp.png",
+            }
+            asset_path = PARTY_UI_DIR / name if name in allowed else None
+            if asset_path and asset_path.exists():
+                self._send_bytes(200, asset_path.read_bytes(), "image/png", cache=True)
+            else:
+                self._send_json(404, {"ok": False, "error": "party_ui_asset_not_found"})
             return
         if parsed.path == "/health":
             self._send_json(200, {"ok": True, "service": "pokemon_anil_live"})
