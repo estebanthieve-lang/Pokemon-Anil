@@ -734,6 +734,180 @@ TEAM_OVERLAY_HTML = """<!doctype html>
 </html>
 """
 
+TEAM_SLOT_OVERLAY_HTML = """<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pokemon Anil Live Slot Overlay</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+    body {
+      display: grid;
+      place-items: center;
+      font-family: "Arial Black", Impact, Arial, sans-serif;
+    }
+    .slot {
+      position: relative;
+      width: 285px;
+      height: 78px;
+      overflow: hidden;
+      color: #f8f8f8;
+      background: rgba(35, 37, 45, .94);
+      border: 3px solid #646978;
+      border-radius: 6px;
+      text-shadow: 2px 2px 0 #050505, -1px -1px 0 #050505, 1px -1px 0 #050505, -1px 1px 0 #050505;
+    }
+    .slot.empty {
+      opacity: .72;
+      filter: grayscale(1);
+    }
+    .sprite-box {
+      position: absolute;
+      left: 10px;
+      top: 9px;
+      width: 58px;
+      height: 58px;
+      overflow: hidden;
+      image-rendering: pixelated;
+    }
+    .sprite-box img {
+      height: 58px;
+      width: auto;
+      max-width: none;
+      image-rendering: pixelated;
+    }
+    .name {
+      position: absolute;
+      left: 75px;
+      top: 7px;
+      width: 142px;
+      height: 23px;
+      overflow: hidden;
+      white-space: nowrap;
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .level {
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      color: #ffef55;
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .hpbar {
+      position: absolute;
+      left: 75px;
+      top: 37px;
+      width: 185px;
+      height: 13px;
+      padding: 2px;
+      background: #11151c;
+      border: 2px solid #e5e5e5;
+      border-radius: 3px;
+    }
+    .hpfill {
+      height: 100%;
+      width: 0%;
+      background: #30ec49;
+      border-radius: 1px;
+    }
+    .hpfill.mid { background: #f1cf35; }
+    .hpfill.low { background: #e63a31; }
+    .ps {
+      position: absolute;
+      left: 75px;
+      top: 52px;
+      font-size: 16px;
+      line-height: 18px;
+    }
+    .status {
+      position: absolute;
+      right: 12px;
+      bottom: 7px;
+      font-size: 13px;
+      color: #d8deea;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <main class="slot empty" id="slot">
+    <div class="sprite-box"></div>
+    <div class="name">Slot</div>
+    <div class="level">Nv.0</div>
+    <div class="hpbar"><div class="hpfill"></div></div>
+    <div class="ps">PS 0%</div>
+    <div class="status">VACIO</div>
+  </main>
+  <script>
+    const slotEl = document.getElementById('slot');
+    const slotMatch = location.pathname.match(/\\/team-slot\\/(\\d+)/);
+    const wantedSlot = Math.max(1, Math.min(6, Number(slotMatch ? slotMatch[1] : 1)));
+
+    function clean(value) {
+      return String(value || '').replace(/[<>&]/g, '');
+    }
+    function hpPct(mon) {
+      const hp = Number(mon.hp || 0);
+      const total = Math.max(1, Number(mon.totalhp || 0));
+      return Math.max(0, Math.min(100, Math.round((hp / total) * 100)));
+    }
+    function renderEmpty(text = 'VACIO') {
+      slotEl.className = 'slot empty';
+      slotEl.innerHTML = `
+        <div class="sprite-box"></div>
+        <div class="name">Slot ${wantedSlot}</div>
+        <div class="level">Nv.0</div>
+        <div class="hpbar"><div class="hpfill"></div></div>
+        <div class="ps">PS 0%</div>
+        <div class="status">${clean(text)}</div>`;
+    }
+    function renderMon(mon) {
+      const pct = hpPct(mon);
+      const hpClass = pct <= 25 ? 'low' : pct <= 50 ? 'mid' : '';
+      const fainted = !!mon.fainted || Number(mon.hp || 0) <= 0;
+      const name = clean(mon.name || mon.species || `Slot ${wantedSlot}`);
+      const level = clean(mon.level || 0);
+      const sprite = clean(mon.sprite || `/team-sprite/${wantedSlot}.png`);
+      slotEl.className = `slot ${fainted ? 'empty' : ''}`;
+      slotEl.innerHTML = `
+        <div class="sprite-box"><img src="${sprite}?t=${Date.now()}" alt=""></div>
+        <div class="name">${name}</div>
+        <div class="level">Nv.${level}</div>
+        <div class="hpbar"><div class="hpfill ${hpClass}" style="width:${pct}%"></div></div>
+        <div class="ps">PS ${pct}%</div>
+        <div class="status">${fainted ? 'DEBIL' : 'OK'}</div>`;
+    }
+    async function refresh() {
+      try {
+        const response = await fetch('/team.json?t=' + Date.now(), { cache: 'no-store' });
+        const payload = await response.json();
+        if (!payload.ok) throw new Error(payload.error || 'bad_team_payload');
+        const team = payload.team || [];
+        const mon = team.find((entry) => Number(entry.slot || 0) === wantedSlot);
+        if (!mon) renderEmpty();
+        else renderMon(mon);
+      } catch (error) {
+        renderEmpty('OFFLINE');
+      }
+    }
+    renderEmpty();
+    refresh();
+    setInterval(refresh, 1000);
+  </script>
+</body>
+</html>
+"""
+
 VK = {
     "backspace": 0x08,
     "tab": 0x09,
@@ -1551,6 +1725,14 @@ class ChaosHandler(BaseHTTPRequestHandler):
         if parsed.path == "/team-overlay":
             body = TEAM_OVERLAY_HTML.encode("utf-8")
             self._send_bytes(200, body, "text/html; charset=utf-8")
+            return
+        if parsed.path.startswith("/team-slot/"):
+            raw_slot = parsed.path.rsplit("/", 1)[-1]
+            if raw_slot.isdigit() and 1 <= int(raw_slot) <= 6:
+                body = TEAM_SLOT_OVERLAY_HTML.encode("utf-8")
+                self._send_bytes(200, body, "text/html; charset=utf-8")
+            else:
+                self._send_json(404, {"ok": False, "error": "slot_not_found"})
             return
         if parsed.path == "/team.json":
             if TEAM_JSON_PATH.exists():
