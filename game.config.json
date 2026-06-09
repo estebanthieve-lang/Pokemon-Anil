@@ -1,11 +1,16 @@
 {
   "gameId": "pokemon-anil-live",
   "name": "Pokemon Anil Live",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "saveRoot": "%APPDATA%\\Pokemon Anil Live",
   "backupRoot": "%APPDATA%\\Pokemon Anil Live\\backups",
   "updateBackupRoot": "%APPDATA%\\Pokemon Anil Live\\backups\\updates",
-  "protectedPaths": [],
+  "protectedPaths": [
+    "logs",
+    "MeterPartidasGuardadas"
+  ],
+  "deletePaths": [],
+  "mirrorPaths": [],
   "mergeConfigFiles": [
     "config/actions_anil.json"
   ],
@@ -20,6 +25,7 @@
     "ABRIR CARPETA DE PARTIDAS LIVE.cmd",
     "RECUPERAR PARTIDAS GUARDADAS.cmd",
     "MeterPartidasGuardadas",
+    "runtime/actualizar_juego.ps1",
     "game.config.json"
   ]
 }

@@ -12,6 +12,29 @@ function Resolve-LocalPath([string]$root, [string]$relative) {
   return [System.IO.Path]::GetFullPath((Join-Path (Normalize-InputPath $root) $clean))
 }
 
+function Test-IsInsideRoot([string]$root, [string]$path) {
+  $rootFull = [System.IO.Path]::GetFullPath((Normalize-InputPath $root)).TrimEnd("\") + "\"
+  $pathFull = [System.IO.Path]::GetFullPath($path)
+  return $pathFull.StartsWith($rootFull, [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Assert-InsideRoot([string]$root, [string]$path, [string]$label) {
+  if (-not (Test-IsInsideRoot $root $path)) {
+    throw "Ruta fuera de la instalacion bloqueada ($label): $path"
+  }
+}
+
+function Test-IsProtectedRelative([string]$relative, [array]$protectedPaths) {
+  $clean = ($relative -replace "/", "\").Trim("\")
+  foreach ($protected in $protectedPaths) {
+    $p = ([string]$protected -replace "/", "\").Trim("\")
+    if (-not $p) { continue }
+    if ($clean.Equals($p, [System.StringComparison]::OrdinalIgnoreCase)) { return $true }
+    if ($clean.StartsWith($p + "\", [System.StringComparison]::OrdinalIgnoreCase)) { return $true }
+  }
+  return $false
+}
+
 function Resolve-AppDataPath([string]$path) {
   return $path.Replace("%APPDATA%", $env:APPDATA)
 }
@@ -57,6 +80,48 @@ function Copy-UpdatePath([string]$source, [string]$target) {
   $targetParent = Split-Path $target -Parent
   if ($targetParent) { New-Item -ItemType Directory -Force -Path $targetParent | Out-Null }
   Copy-Item -LiteralPath $source -Destination $target -Force
+}
+
+function Remove-InstalledPath([string]$installRoot, [string]$relative, [string]$backupRoot, [array]$protectedPaths) {
+  if (Test-IsProtectedRelative $relative $protectedPaths) {
+    Write-Host "No se borra protegido: $relative" -ForegroundColor Yellow
+    return
+  }
+  $target = Resolve-LocalPath $installRoot $relative
+  Assert-InsideRoot $installRoot $target $relative
+  if (-not (Test-Path -LiteralPath $target)) { return }
+  Backup-ExistingPath $target $backupRoot $relative
+  Remove-Item -LiteralPath $target -Recurse -Force
+  Write-Host "Borrado obsoleto: $relative" -ForegroundColor Yellow
+}
+
+function Sync-UpdateDirectory([string]$source, [string]$target, [string]$installRoot, [string]$relativeRoot, [string]$backupRoot, [array]$protectedPaths) {
+  if (-not (Test-Path -LiteralPath $source)) { return }
+  if (-not (Get-Item -LiteralPath $source).PSIsContainer) {
+    Copy-UpdatePath $source $target
+    return
+  }
+
+  New-Item -ItemType Directory -Force -Path $target | Out-Null
+  Copy-UpdatePath $source $target
+
+  $targetRoot = [System.IO.Path]::GetFullPath($target).TrimEnd("\")
+  $sourceRoot = [System.IO.Path]::GetFullPath($source).TrimEnd("\")
+  $stale = Get-ChildItem -LiteralPath $targetRoot -Recurse -Force | Sort-Object FullName -Descending | Where-Object {
+    $relativeChild = $_.FullName.Substring($targetRoot.Length).TrimStart("\")
+    $sourcePeer = Join-Path $sourceRoot $relativeChild
+    -not (Test-Path -LiteralPath $sourcePeer)
+  }
+
+  foreach ($item in $stale) {
+    $relativeChild = $item.FullName.Substring($targetRoot.Length).TrimStart("\")
+    $relative = Join-Path $relativeRoot $relativeChild
+    if (Test-IsProtectedRelative $relative $protectedPaths) { continue }
+    Assert-InsideRoot $installRoot $item.FullName $relative
+    Backup-ExistingPath $item.FullName $backupRoot $relative
+    Remove-Item -LiteralPath $item.FullName -Recurse -Force
+    Write-Host "Borrado obsoleto por espejo: $relative" -ForegroundColor Yellow
+  }
 }
 
 function Merge-ActionsConfig([string]$currentPath, [string]$incomingPath) {
@@ -141,6 +206,8 @@ if ($currentManifest -and $currentManifest.gameId -and $incomingManifest.gameId 
 }
 
 $config = Read-JsonFile $configPath
+$incomingConfigPath = Join-Path $updatePath "game.config.json"
+$pathConfig = if (Test-Path -LiteralPath $incomingConfigPath) { Read-JsonFile $incomingConfigPath } else { $config }
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $updateBackupRoot = Resolve-AppDataPath $config.updateBackupRoot
 if (-not $updateBackupRoot) {
@@ -149,9 +216,11 @@ if (-not $updateBackupRoot) {
 $backupRoot = Join-Path $updateBackupRoot "update-$timestamp"
 New-Item -ItemType Directory -Force -Path $backupRoot | Out-Null
 
-$protected = @($config.protectedPaths) | Where-Object { $_ }
-$mergeFiles = @($config.mergeConfigFiles) | Where-Object { $_ }
-$updatable = @($config.updatablePaths) | Where-Object { $_ }
+$protected = @($pathConfig.protectedPaths) | Where-Object { $_ }
+$mergeFiles = @($pathConfig.mergeConfigFiles) | Where-Object { $_ }
+$updatable = @($pathConfig.updatablePaths) | Where-Object { $_ }
+$deletePaths = @($pathConfig.deletePaths) | Where-Object { $_ }
+$mirrorPaths = @($pathConfig.mirrorPaths) | Where-Object { $_ }
 
 Write-Host ""
 Write-Host "Instalacion: $installPath" -ForegroundColor White
@@ -163,14 +232,20 @@ Write-Host ""
 
 foreach ($relative in $mergeFiles) {
   $source = Resolve-LocalPath $updatePath $relative
+  Assert-InsideRoot $updatePath $source $relative
   if (-not (Test-Path -LiteralPath $source)) {
     Write-Host "No viene merge config, se deja igual: $relative"
     continue
   }
   $target = Resolve-LocalPath $installPath $relative
+  Assert-InsideRoot $installPath $target $relative
   Backup-ExistingPath $target $backupRoot $relative
   Merge-ActionsConfig $target $source
   Write-Host "Config fusionada sin pisar opciones locales: $relative" -ForegroundColor Green
+}
+
+foreach ($relative in $deletePaths) {
+  Remove-InstalledPath $installPath $relative $backupRoot $protected
 }
 
 foreach ($relative in $updatable) {
@@ -181,15 +256,22 @@ foreach ($relative in $updatable) {
   }
 
   $source = Resolve-LocalPath $updatePath $relative
+  Assert-InsideRoot $updatePath $source $relative
   if (-not (Test-Path -LiteralPath $source)) {
     Write-Host "No viene en update, se deja igual: $relative"
     continue
   }
 
   $target = Resolve-LocalPath $installPath $relative
+  Assert-InsideRoot $installPath $target $relative
   Backup-ExistingPath $target $backupRoot $relative
-  Copy-UpdatePath $source $target
-  Write-Host "Actualizado: $relative" -ForegroundColor Green
+  if ($mirrorPaths -contains $relative) {
+    Sync-UpdateDirectory $source $target $installPath $relative $backupRoot $protected
+    Write-Host "Sincronizado espejo: $relative" -ForegroundColor Green
+  } else {
+    Copy-UpdatePath $source $target
+    Write-Host "Actualizado: $relative" -ForegroundColor Green
+  }
 }
 
 Write-Host ""
