@@ -1,7 +1,7 @@
 {
   "gameId": "pokemon-anil-live",
   "name": "Pokemon Anil Live",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "saveRoot": "%APPDATA%\\Pokemon Anil Live",
   "backupRoot": "%APPDATA%\\Pokemon Anil Live\\backups",
   "updateBackupRoot": "%APPDATA%\\Pokemon Anil Live\\backups\\updates",

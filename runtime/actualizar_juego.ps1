@@ -74,7 +74,7 @@ function Backup-ExistingPath([string]$target, [string]$backupRoot, [string]$rela
 function Copy-UpdatePath([string]$source, [string]$target) {
   if ((Get-Item -LiteralPath $source).PSIsContainer) {
     New-Item -ItemType Directory -Force -Path $target | Out-Null
-    Copy-Item -LiteralPath (Join-Path $source "*") -Destination $target -Recurse -Force
+    Copy-Item -Path (Join-Path $source "*") -Destination $target -Recurse -Force
     return
   }
   $targetParent = Split-Path $target -Parent
