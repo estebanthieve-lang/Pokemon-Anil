@@ -1,15 +1,15 @@
 {
   "id": "pokemon-anil-live",
   "gameId": "pokemon-anil-live",
-  "name": "Pokemon AÃ±il Live",
-  "description": "Runtime limpio para conectar Pokemon AÃ±il con una base tipo Tikfinity por HTTP.",
-  "version": "0.1.6",
+  "name": "Pokemon AÃƒÂ±il Live",
+  "description": "Runtime limpio para conectar Pokemon AÃƒÂ±il con una base tipo Tikfinity por HTTP.",
+  "version": "0.1.7",
   "endpoint": "POST http://127.0.0.1:8877/event",
   "updates": {
     "githubRepo": "estebanthieve-lang/Pokemon-Anil",
     "latestManifestUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/game-manifest.json",
     "releaseUrl": "https://github.com/estebanthieve-lang/Pokemon-Anil/releases/latest",
-    "downloadUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/updates/pokemon-anil-update-0.1.6.zip"
+    "downloadUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/updates/pokemon-anil-update-0.1.7.zip"
   },
   "eventBus": {
     "protocol": "http",
@@ -22,30 +22,30 @@
   "actions": [
     {
       "id": "add_potion_live",
-      "label": "+1 PociÃ³n",
+      "label": "+1 PociÃƒÂ³n",
       "type": "game_action",
-      "description": "Agrega 1 PociÃ³n a la mochila. Si la mochila estÃ¡ abierta, puede verse al salir y entrar de nuevo.",
+      "description": "Agrega 1 PociÃƒÂ³n a la mochila. Si la mochila estÃƒÂ¡ abierta, puede verse al salir y entrar de nuevo.",
       "params": {}
     },
     {
       "id": "remove_potion_live",
-      "label": "-1 PociÃ³n",
+      "label": "-1 PociÃƒÂ³n",
       "type": "game_action",
-      "description": "Quita 1 PociÃ³n de la mochila si existe. No hace nada si no hay Pociones.",
+      "description": "Quita 1 PociÃƒÂ³n de la mochila si existe. No hace nada si no hay Pociones.",
       "params": {}
     },
     {
       "id": "add_pokeball_live",
-      "label": "+1 PokÃ© Ball",
+      "label": "+1 PokÃƒÂ© Ball",
       "type": "game_action",
-      "description": "Agrega 1 PokÃ© Ball a la mochila. En combate aparece al refrescar el bolsillo de Balls.",
+      "description": "Agrega 1 PokÃƒÂ© Ball a la mochila. En combate aparece al refrescar el bolsillo de Balls.",
       "params": {}
     },
     {
       "id": "remove_pokeball_live",
-      "label": "-1 PokÃ© Ball",
+      "label": "-1 PokÃƒÂ© Ball",
       "type": "game_action",
-      "description": "Quita 1 PokÃ© Ball de la mochila si existe. No elimina otras Balls.",
+      "description": "Quita 1 PokÃƒÂ© Ball de la mochila si existe. No elimina otras Balls.",
       "params": {}
     },
     {
@@ -64,16 +64,16 @@
     },
     {
       "id": "heal_party_live",
-      "label": "Curar PokÃ©mon",
+      "label": "Curar PokÃƒÂ©mon",
       "type": "game_action",
-      "description": "Cura PS, estados y PP del equipo cuando la partida estÃ¡ cargada.",
+      "description": "Cura PS, estados y PP del equipo cuando la partida estÃƒÂ¡ cargada.",
       "params": {}
     },
     {
       "id": "party_hp_1_live",
-      "label": "Dejar PokÃ©mon a 1 PS",
+      "label": "Dejar PokÃƒÂ©mon a 1 PS",
       "type": "game_action",
-      "description": "Deja a los PokÃ©mon del equipo con 1 PS. No cambia la especie ni borra objetos.",
+      "description": "Deja a los PokÃƒÂ©mon del equipo con 1 PS. No cambia la especie ni borra objetos.",
       "params": {}
     },
     {
@@ -99,23 +99,23 @@
     },
     {
       "id": "revive_random_pokemon_live",
-      "label": "Revivir 1 PokÃ©mon aleatorio",
+      "label": "Revivir 1 PokÃƒÂ©mon aleatorio",
       "type": "game_action",
-      "description": "Revive un PokÃ©mon debilitado aleatorio del equipo con la mitad de sus PS. Si no hay debilitados, no hace nada.",
+      "description": "Revive un PokÃƒÂ©mon debilitado aleatorio del equipo con la mitad de sus PS. Si no hay debilitados, no hace nada.",
       "params": {}
     },
     {
       "id": "add_master_ball_live",
       "label": "+1 Master Ball",
       "type": "game_action",
-      "description": "Agrega 1 Master Ball a la mochila. AcciÃ³n fuerte; conviene ponerle cooldown en la base.",
+      "description": "Agrega 1 Master Ball a la mochila. AcciÃƒÂ³n fuerte; conviene ponerle cooldown en la base.",
       "params": {}
     },
     {
       "id": "add_shiny_potion_live",
-      "label": "+1 PociÃ³n Brillante",
+      "label": "+1 PociÃƒÂ³n Brillante",
       "type": "game_action",
-      "description": "Agrega 1 PociÃ³n Brillante. Al usarla desde la mochila, durante 2 minutos tiene prioridad para Encuentro legendario ahora. Si no sale legendario en ese tiempo, el siguiente salvaje normal puede salir variocolor.",
+      "description": "Agrega 1 PociÃƒÂ³n Brillante. Al usarla desde la mochila, durante 2 minutos tiene prioridad para Encuentro legendario ahora. Si no sale legendario en ese tiempo, el siguiente salvaje normal puede salir variocolor.",
       "params": {}
     },
     {
@@ -127,23 +127,23 @@
     },
     {
       "id": "faint_random_pokemon_live",
-      "label": "Debilitar 1 PokÃ©mon aleatorio",
+      "label": "Debilitar 1 PokÃƒÂ©mon aleatorio",
       "type": "game_action",
-      "description": "Deja a 0 PS un PokÃ©mon aleatorio del equipo que estÃ© vivo. Si no hay objetivo vÃ¡lido, no hace nada.",
+      "description": "Deja a 0 PS un PokÃƒÂ©mon aleatorio del equipo que estÃƒÂ© vivo. Si no hay objetivo vÃƒÂ¡lido, no hace nada.",
       "params": {}
     },
     {
       "id": "press_c_three_times_live",
-      "label": "Pulsar acciÃ³n 3 veces",
+      "label": "Pulsar acciÃƒÂ³n 3 veces",
       "type": "game_action",
-      "description": "Pulsa el botÃ³n de acciÃ³n C tres veces con 0,55 segundos entre pulsaciones. Es una acciÃ³n especÃ­fica, no teclas libres.",
+      "description": "Pulsa el botÃƒÂ³n de acciÃƒÂ³n C tres veces con 0,55 segundos entre pulsaciones. Es una acciÃƒÂ³n especÃƒÂ­fica, no teclas libres.",
       "params": {}
     },
     {
       "id": "party_hp_50_percent_live",
       "label": "Todos a 50% de vida",
       "type": "game_action",
-      "description": "Deja a cada PokÃ©mon del equipo con el 50% de sus PS mÃ¡ximos.",
+      "description": "Deja a cada PokÃƒÂ©mon del equipo con el 50% de sus PS mÃƒÂ¡ximos.",
       "params": {}
     },
     {
@@ -162,16 +162,16 @@
     },
     {
       "id": "remove_all_pokeballs_live",
-      "label": "Eliminar todas las PokÃ© Balls",
+      "label": "Eliminar todas las PokÃƒÂ© Balls",
       "type": "game_action",
-      "description": "Elimina todas las Balls de captura de la mochila. Si el menÃº ya estaba abierto, puede requerir salir y entrar para refrescar.",
+      "description": "Elimina todas las Balls de captura de la mochila. Si el menÃƒÂº ya estaba abierto, puede requerir salir y entrar para refrescar.",
       "params": {}
     },
     {
       "id": "force_battle_switch_random_live",
-      "label": "Cambiar PokÃ©mon en combate",
+      "label": "Cambiar PokÃƒÂ©mon en combate",
       "type": "game_action",
-      "description": "Si hay combate, elige un PokÃ©mon activo del jugador al azar y lo cambia por una reserva viva vÃ¡lida. En combate doble puede tocar cualquiera de los dos activos. Si no se puede cambiar, no hace nada.",
+      "description": "Si hay combate, elige un PokÃƒÂ©mon activo del jugador al azar y lo cambia por una reserva viva vÃƒÂ¡lida. En combate doble puede tocar cualquiera de los dos activos. Si no se puede cambiar, no hace nada.",
       "params": {}
     },
     {
@@ -183,9 +183,9 @@
     },
     {
       "id": "replace_party_with_random_pokedex_safe_live",
-      "label": "Cambiar por PokÃ©mon random de PokÃ©dex",
+      "label": "Cambiar por PokÃƒÂ©mon random de PokÃƒÂ©dex",
       "type": "game_action",
-      "description": "Reemplaza un PokÃ©mon del equipo por una especie aleatoria de la PokÃ©dex, manteniendo nivel parecido. Evita huevos y shinys cuando puede. La especie tiene 98% normal y 2% legendario.",
+      "description": "Reemplaza un PokÃƒÂ©mon del equipo por una especie aleatoria de la PokÃƒÂ©dex, manteniendo nivel parecido. Evita huevos y shinys cuando puede. La especie tiene 98% normal y 2% legendario.",
       "params": {}
     },
     {
@@ -197,9 +197,9 @@
     },
     {
       "id": "gift_random_pokedex_pokemon_live",
-      "label": "Regalar PokÃ©mon random",
+      "label": "Regalar PokÃƒÂ©mon random",
       "type": "game_action",
-      "description": "Crea un PokÃ©mon aleatorio de la PokÃ©dex con nivel parecido al equipo. Si hay espacio entra al equipo; si no, se guarda en una caja del PC. Si el PC estuviera lleno, intenta crear una caja Regalos Live. Tiene 98% normal y 2% legendario.",
+      "description": "Crea un PokÃƒÂ©mon aleatorio de la PokÃƒÂ©dex con nivel parecido al equipo. Si hay espacio entra al equipo; si no, se guarda en una caja del PC. Si el PC estuviera lleno, intenta crear una caja Regalos Live. Tiene 98% normal y 2% legendario.",
       "params": {}
     },
     {

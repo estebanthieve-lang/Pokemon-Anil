@@ -48,7 +48,7 @@ PANEL_HTML = """<!doctype html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pokemon Añil Live</title>
+  <title>Pokemon Anil Live</title>
   <style>
     :root {
       color-scheme: dark;
@@ -250,7 +250,7 @@ PANEL_HTML = """<!doctype html>
 <body>
   <main>
     <header>
-      <h1>Pokemon Añil Live</h1>
+      <h1>Pokemon Anil Live</h1>
       <div class="mode"><span class="dot"></span><span id="modeText">Anil Live</span></div>
     </header>
 
@@ -526,32 +526,33 @@ TEAM_OVERLAY_HTML = """<!doctype html>
     }
     body { display: grid; place-items: center; }
     .overlay {
-      width: min(960px, 100vw);
-      aspect-ratio: 16 / 9;
+      width: min(1120px, 100vw);
+      height: min(620px, 100vh);
       position: relative;
       background: transparent;
     }
     .slot {
       position: absolute;
-      width: 40%;
-      height: 19%;
+      width: 42%;
+      height: 19.5%;
       border: 3px solid rgba(210,255,224,.95);
       background: linear-gradient(180deg, rgba(4,158,53,.96), rgba(3,94,35,.94));
       box-shadow: 0 5px 0 rgba(0,0,0,.50), inset 0 0 0 2px rgba(0,50,18,.75);
       color: #f7fbff;
-      padding: 7px 12px 7px 76px;
+      padding: 10px 14px 9px 112px;
       display: grid;
       grid-template-columns: 1fr auto;
-      grid-template-rows: 30px 18px 24px;
-      gap: 0 8px;
+      grid-template-rows: 34px 22px 16px 25px;
+      gap: 0 10px;
       text-shadow: 2px 2px 0 #17242b;
+      overflow: visible;
     }
-    .slot:nth-child(1) { left: 3%; top: 5%; }
-    .slot:nth-child(2) { right: 3%; top: 10%; }
-    .slot:nth-child(3) { left: 3%; top: 31%; }
-    .slot:nth-child(4) { right: 3%; top: 36%; }
-    .slot:nth-child(5) { left: 3%; top: 57%; }
-    .slot:nth-child(6) { right: 3%; top: 62%; }
+    .slot:nth-child(1) { left: 2.2%; top: 6%; }
+    .slot:nth-child(2) { right: 2.2%; top: 12%; }
+    .slot:nth-child(3) { left: 2.2%; top: 36%; }
+    .slot:nth-child(4) { right: 2.2%; top: 42%; }
+    .slot:nth-child(5) { left: 2.2%; top: 66%; }
+    .slot:nth-child(6) { right: 2.2%; top: 72%; }
     .slot.empty { opacity: .38; filter: grayscale(1); }
     .slot.fainted {
       background: linear-gradient(180deg, rgba(83,91,93,.96), rgba(38,43,45,.94));
@@ -559,10 +560,11 @@ TEAM_OVERLAY_HTML = """<!doctype html>
     }
     .ball {
       position: absolute;
-      left: 9px;
-      top: 12px;
-      width: 48px;
-      height: 48px;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       background: linear-gradient(#e95d4f 0 45%, #25292c 46% 53%, #f7f7f7 54% 100%);
       border: 3px solid #1b2024;
@@ -571,38 +573,41 @@ TEAM_OVERLAY_HTML = """<!doctype html>
     .ball::after {
       content: "";
       position: absolute;
-      left: 14px;
-      top: 14px;
-      width: 14px;
-      height: 14px;
+      left: 16px;
+      top: 16px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       background: #f7f7f7;
       border: 3px solid #1b2024;
     }
     .sprite {
       position: absolute;
-      left: 28px;
-      top: -8px;
-      width: 72px;
-      height: 72px;
+      left: 50px;
+      top: 50%;
+      transform: translateY(-54%);
+      width: 76px;
+      height: 76px;
       image-rendering: pixelated;
       object-fit: contain;
       filter: drop-shadow(3px 4px 0 rgba(0,0,0,.45));
+      z-index: 2;
     }
     .name {
       grid-column: 1 / 2;
       font-weight: 900;
-      font-size: clamp(18px, 3.15vw, 31px);
+      font-size: clamp(17px, 2.7vw, 30px);
       line-height: 1;
       letter-spacing: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-width: 0;
     }
     .gender {
       grid-column: 2 / 3;
       font-weight: 900;
-      font-size: clamp(18px, 2.7vw, 27px);
+      font-size: clamp(14px, 2vw, 20px);
       line-height: 1;
       color: #ff8fca;
     }
@@ -610,7 +615,7 @@ TEAM_OVERLAY_HTML = """<!doctype html>
     .meta {
       grid-column: 1 / 2;
       font-weight: 800;
-      font-size: clamp(13px, 2vw, 20px);
+      font-size: clamp(12px, 1.8vw, 18px);
       line-height: 1;
     }
     .hpbar {
@@ -634,7 +639,7 @@ TEAM_OVERLAY_HTML = """<!doctype html>
       grid-column: 1 / 3;
       justify-self: end;
       font-weight: 900;
-      font-size: clamp(16px, 2.7vw, 27px);
+      font-size: clamp(15px, 2.35vw, 25px);
       line-height: 1;
     }
     .status {
@@ -648,7 +653,7 @@ TEAM_OVERLAY_HTML = """<!doctype html>
     }
     .offline {
       position: absolute;
-      inset: auto 20px 20px 20px;
+      inset: auto 24px 24px 24px;
       padding: 12px 16px;
       border: 2px solid rgba(255,255,255,.7);
       background: rgba(15,20,24,.78);
@@ -657,6 +662,17 @@ TEAM_OVERLAY_HTML = """<!doctype html>
       display: none;
     }
     .offline.show { display: block; }
+    @media (max-width: 720px) {
+      .overlay { width: 100vw; height: 100vh; }
+      .slot {
+        width: 47%;
+        padding-left: 88px;
+        grid-template-rows: 28px 19px 14px 22px;
+      }
+      .ball { width: 44px; height: 44px; }
+      .ball::after { left: 12px; top: 12px; }
+      .sprite { left: 38px; width: 64px; height: 64px; }
+    }
   </style>
 </head>
 <body>
@@ -676,8 +692,8 @@ TEAM_OVERLAY_HTML = """<!doctype html>
       return Math.max(0, Math.min(100, Math.round((hp / total) * 100)));
     }
     function genderText(gender) {
-      if (gender === 'male') return '♂';
-      if (gender === 'female') return '♀';
+      if (gender === 'male') return 'M';
+      if (gender === 'female') return 'F';
       return '';
     }
     function render(team) {
@@ -710,11 +726,14 @@ TEAM_OVERLAY_HTML = """<!doctype html>
       try {
         const response = await fetch('/team.json?t=' + Date.now(), { cache: 'no-store' });
         const payload = await response.json();
-        if (!payload.ok) throw new Error('bad team payload');
+        if (!payload.ok) throw new Error(payload.error || 'bad team payload');
         offlineEl.classList.remove('show');
         render(payload.team || []);
       } catch (error) {
         offlineEl.classList.add('show');
+        offlineEl.textContent = error.message === 'team_not_ready'
+          ? 'Abre una partida en Pokemon Anil Live para mostrar el equipo'
+          : 'Pokemon Anil Live desconectado';
         render([]);
       }
     }
@@ -859,7 +878,7 @@ def load_manifest():
         return {
             "id": "pokemon-anil-live",
             "gameId": "pokemon-anil-live",
-            "name": "Pokemon Añil Live",
+            "name": "Pokemon Anil Live",
             "endpoint": "POST http://127.0.0.1:8765/event",
             "actions": [],
         }
@@ -1724,7 +1743,7 @@ def serve():
     host = config["server"].get("host", "127.0.0.1")
     port = int(config["server"].get("port", 8765))
     server = ThreadingHTTPServer((host, port), ChaosHandler)
-    print(f"Pokemon Añil Live event bus listening on http://{host}:{port}")
+    print(f"Pokemon Anil Live event bus listening on http://{host}:{port}")
     print("POST /event with {\"action\":\"add_potion_live\"}")
     server.serve_forever()
 
@@ -1756,3 +1775,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
