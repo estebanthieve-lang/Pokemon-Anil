@@ -1685,6 +1685,43 @@ def action_from_gift(config, gift_id=None, gift_name=None):
     return None
 
 
+def live_chaos_log_path(config):
+    command_file = config.get("file_bridge", {}).get("command_file")
+    if command_file:
+        return Path(command_file).with_name("live_chaos_log.txt")
+    return ROOT / "logs" / "live_chaos_log.txt"
+
+
+def latest_lottery_status(config):
+    log_path = live_chaos_log_path(config)
+    lines = []
+    if log_path.exists():
+        lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-120:]
+    for index, line in enumerate(reversed(lines)):
+        if "pokemon_lottery_status " not in line:
+            continue
+        detail = line.split("pokemon_lottery_status ", 1)[-1].strip()
+        if " skipped:" in line or " failed:" in line:
+            return {
+                "ok": True,
+                "active": False,
+                "id": f"{len(lines) - index}:{line}",
+                "line": line,
+                "summary": detail,
+            }
+        parts = detail.split(None, 2)
+        return {
+            "ok": True,
+            "active": True,
+            "id": f"{len(lines) - index}:{line}",
+            "line": line,
+            "code": parts[0] if parts else "",
+            "amount": parts[1] if len(parts) > 1 else "",
+            "summary": parts[2] if len(parts) > 2 else detail,
+        }
+    return {"ok": True, "active": False, "id": "", "summary": "", "line": ""}
+
+
 class ChaosHandler(BaseHTTPRequestHandler):
     def _send_cors_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -1823,15 +1860,14 @@ class ChaosHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/api/live-log":
             config = load_config()
-            command_file = config.get("file_bridge", {}).get("command_file")
-            if command_file:
-                log_path = Path(command_file).with_name("live_chaos_log.txt")
-            else:
-                log_path = ROOT / "logs" / "live_chaos_log.txt"
+            log_path = live_chaos_log_path(config)
             lines = []
             if log_path.exists():
                 lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-40:]
             self._send_json(200, {"ok": True, "path": str(log_path), "lines": lines})
+            return
+        if parsed.path == "/api/lottery-status":
+            self._send_json(200, latest_lottery_status(load_config()))
             return
         self._send_json(404, {"ok": False, "error": "not_found"})
 

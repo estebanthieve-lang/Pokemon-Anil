@@ -208,12 +208,20 @@ module LiveChaosAnil
       log("pokemon_lottery_status skipped: no valid targets")
       return
     end
-    status, code, label = status_pool.sample
     amount = 1 + rand(3)
     chosen = targets.shuffle.first(amount)
+    statuses = status_pool.shuffle
     applied = 0
-    chosen.each { |pkmn| applied += 1 if apply_status(pkmn, status) }
-    log("pokemon_lottery_status #{code} #{applied}/#{amount} #{label}")
+    results = []
+    chosen.each_with_index do |pkmn, index|
+      status, code, label = statuses[index % statuses.length]
+      if apply_status(pkmn, status)
+        applied += 1
+        name = pkmn.respond_to?(:name) ? pkmn.name.to_s : "Pokemon"
+        results << "#{code}:#{name}"
+      end
+    end
+    log("pokemon_lottery_status MIX #{applied}/#{amount} #{results.join(',')}")
   end
 
   def self.replace_all_party_with_random_pokedex_safe
