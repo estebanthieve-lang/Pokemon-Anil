@@ -86,6 +86,9 @@ module LiveChaosAnil
     when "heal_party"
       enqueue(:type => :heal_party)
       "OK queued heal_party"
+    when "pokemon_lottery_status"
+      enqueue(:type => :pokemon_lottery_status)
+      "OK queued pokemon_lottery_status"
     when "replace_all_party_with_random_pokedex_safe"
       enqueue(:type => :replace_all_party_with_random_pokedex_safe)
       "OK queued replace_all_party_with_random_pokedex_safe"
@@ -130,6 +133,8 @@ module LiveChaosAnil
       add_item(payload[:item], payload[:quantity])
     when :heal_party
       heal_party
+    when :pokemon_lottery_status
+      pokemon_lottery_status
     when :replace_all_party_with_random_pokedex_safe
       replace_all_party_with_random_pokedex_safe
     end
@@ -158,6 +163,57 @@ module LiveChaosAnil
       raise "party is not ready"
     end
     log("party healed")
+  end
+
+  def self.party
+    return $player.party if defined?($player) && $player && $player.respond_to?(:party)
+    nil
+  end
+
+  def self.status_pool
+    [
+      [:PARALYSIS, "PAR", "Paralizados"],
+      [:SLEEP, "DOR", "Dormidos"],
+      [:BURN, "QUE", "Quemados"],
+      [:POISON, "ENV", "Envenenados"],
+      [:FROZEN, "CON", "Congelados"]
+    ]
+  end
+
+  def self.can_receive_status?(pkmn)
+    return false unless pkmn
+    return false if pkmn.respond_to?(:egg?) && pkmn.egg?
+    return false if pkmn.respond_to?(:fainted?) && pkmn.fainted?
+    if pkmn.respond_to?(:status)
+      current = pkmn.status
+      return false unless current.nil? || current == :NONE || current.to_s.empty?
+    end
+    true
+  end
+
+  def self.apply_status(pkmn, status)
+    return false unless pkmn.respond_to?(:status=)
+    pkmn.status = status
+    if status == :SLEEP && pkmn.respond_to?(:statusCount=)
+      pkmn.statusCount = 2 + rand(3)
+    end
+    true
+  end
+
+  def self.pokemon_lottery_status
+    current_party = party
+    raise "party is not ready" unless current_party
+    targets = current_party.compact.select { |pkmn| can_receive_status?(pkmn) }
+    if targets.empty?
+      log("pokemon_lottery_status skipped: no valid targets")
+      return
+    end
+    status, code, label = status_pool.sample
+    amount = 1 + rand(3)
+    chosen = targets.shuffle.first(amount)
+    applied = 0
+    chosen.each { |pkmn| applied += 1 if apply_status(pkmn, status) }
+    log("pokemon_lottery_status #{code} #{applied}/#{amount} #{label}")
   end
 
   def self.replace_all_party_with_random_pokedex_safe
