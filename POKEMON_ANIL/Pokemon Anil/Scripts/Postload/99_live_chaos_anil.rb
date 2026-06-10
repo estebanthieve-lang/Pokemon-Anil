@@ -73,6 +73,9 @@ module LiveChaosAnil
     when "heal_party"
       @queue << { :type => :heal_party }
       log("queued heal_party")
+    when "pokemon_lottery_status"
+      @queue << { :type => :pokemon_lottery_status }
+      log("queued pokemon_lottery_status")
     else
       log("unknown command #{line}")
     end
@@ -84,6 +87,8 @@ module LiveChaosAnil
       add_item(payload[:item], payload[:quantity])
     when :heal_party
       heal_party
+    when :pokemon_lottery_status
+      pokemon_lottery_status
     end
   rescue => e
     log("command failed: #{e.class}: #{e.message}")
@@ -110,6 +115,61 @@ module LiveChaosAnil
       raise "party is not ready"
     end
     log("party healed")
+  end
+
+  def self.party
+    return $player.party if defined?($player) && $player && $player.respond_to?(:party)
+    return nil
+  end
+
+  def self.status_pool
+    [
+      [:PARALYSIS, "PAR", "Paralizados"],
+      [:SLEEP, "DOR", "Dormidos"],
+      [:BURN, "QUE", "Quemados"],
+      [:POISON, "ENV", "Envenenados"],
+      [:FROZEN, "CON", "Congelados"]
+    ]
+  end
+
+  def self.can_receive_status?(pkmn)
+    return false unless pkmn
+    return false if pkmn.respond_to?(:egg?) && pkmn.egg?
+    return false if pkmn.respond_to?(:fainted?) && pkmn.fainted?
+    if pkmn.respond_to?(:status)
+      current = pkmn.status
+      return false unless current.nil? || current == :NONE || current.to_s.empty?
+    end
+    return true
+  end
+
+  def self.apply_status(pkmn, status)
+    if pkmn.respond_to?(:status=)
+      pkmn.status = status
+      if status == :SLEEP && pkmn.respond_to?(:statusCount=)
+        pkmn.statusCount = 2 + rand(3)
+      end
+      return true
+    end
+    false
+  end
+
+  def self.pokemon_lottery_status
+    current_party = party
+    raise "party is not ready" unless current_party
+    targets = current_party.compact.select { |pkmn| can_receive_status?(pkmn) }
+    if targets.empty?
+      log("pokemon_lottery_status skipped: no valid targets")
+      return
+    end
+    status, code, label = status_pool.sample
+    amount = 1 + rand(3)
+    chosen = targets.shuffle.first(amount)
+    applied = 0
+    chosen.each do |pkmn|
+      applied += 1 if apply_status(pkmn, status)
+    end
+    log("pokemon_lottery_status #{code} #{applied}/#{amount} #{label}")
   end
 end
 

@@ -81,6 +81,11 @@
                                             "command":  "heal_party",
                                             "timeout_ms":  1500
                                         },
+                    "pokemon_lottery_live":  {
+                                                "type":  "file_command",
+                                                "command":  "pokemon_lottery_status",
+                                                "timeout_ms":  1500
+                                            },
                     "party_hp_1_live":  {
                                             "type":  "file_command",
                                             "command":  "set_party_hp 1",

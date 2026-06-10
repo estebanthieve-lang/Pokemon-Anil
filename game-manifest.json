@@ -70,6 +70,13 @@
       "params": {}
     },
     {
+      "id": "pokemon_lottery_live",
+      "label": "Sorteo Pokemon",
+      "type": "game_action",
+      "description": "Elige internamente un estado alterado negativo y lo aplica a 1, 2 o 3 Pokemon aleatorios del equipo.",
+      "params": {}
+    },
+    {
       "id": "party_hp_1_live",
       "label": "Dejar PokÃƒÂ©mon a 1 PS",
       "type": "game_action",

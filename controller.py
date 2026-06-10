@@ -32,7 +32,8 @@ PORTABLE_MGBA_CONFIG_PATH = ROOT / "config" / "mgba_config.ini"
 TEAM_OVERLAY_ROOT = Path(os.environ.get("APPDATA", "")) / "Pokemon Anil Live" / "team_overlay"
 TEAM_JSON_PATH = TEAM_OVERLAY_ROOT / "team.json"
 TEAM_SPRITE_DIR = TEAM_OVERLAY_ROOT / "team_sprites"
-PARTY_UI_DIR = ROOT / "POKEMON_ANIL" / "Pokemon Anil" / "Graphics" / "UI" / "Bag Screen with Party"
+GAME_UI_ROOT = ROOT / "POKEMON_ANIL" / "Pokemon Anil" / "Graphics" / "UI"
+PARTY_UI_DIR = GAME_UI_ROOT / "Bag Screen with Party"
 
 ACTION_QUEUE = queue.Queue()
 QUEUE_LOCK = threading.Lock()
@@ -1689,6 +1690,7 @@ class ChaosHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Requested-With")
+        self.send_header("Access-Control-Allow-Private-Network", "true")
         self.send_header("Access-Control-Max-Age", "86400")
 
     def _send_json(self, status, payload):
@@ -1761,14 +1763,24 @@ class ChaosHandler(BaseHTTPRequestHandler):
             return
         if parsed.path.startswith("/party-ui/") and parsed.path.endswith(".png"):
             name = Path(parsed.path).name
-            allowed = {
+            party_assets = {
                 "ptpanel_rect_desel.png",
                 "ptpanel_rect_faint.png",
                 "ptpanel_blank.png",
                 "overlay_hp_back.png",
                 "overlay_hp.png",
+                "shiny.png",
+                "shiny_ur.png",
             }
-            asset_path = PARTY_UI_DIR / name if name in allowed else None
+            root_assets = {
+                "statuses.png",
+            }
+            if name in party_assets:
+                asset_path = PARTY_UI_DIR / name
+            elif name in root_assets:
+                asset_path = GAME_UI_ROOT / name
+            else:
+                asset_path = None
             if asset_path and asset_path.exists():
                 self._send_bytes(200, asset_path.read_bytes(), "image/png", cache=True)
             else:
