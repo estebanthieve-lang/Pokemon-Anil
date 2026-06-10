@@ -171,12 +171,13 @@ module LiveChaosAnil
   end
 
   def self.status_pool
+    frozen = defined?(GameData::Status) && GameData::Status.try_get(:FROZEN) ? :FROZEN : :FROSTBITE
     [
-      ["PARALYSIS", "PAR", "Paralizados"],
-      ["SLEEP", "DOR", "Dormidos"],
-      ["BURN", "QUE", "Quemados"],
-      ["POISON", "ENV", "Envenenados"],
-      ["FROZEN", "CON", "Congelados"]
+      [:PARALYSIS, "PAR", "Paralizados"],
+      [:SLEEP, "DOR", "Dormidos"],
+      [:BURN, "QUE", "Quemados"],
+      [:POISON, "ENV", "Envenenados"],
+      [frozen, "CON", "Congelados"]
     ]
   end
 
@@ -193,8 +194,10 @@ module LiveChaosAnil
 
   def self.apply_status(pkmn, status)
     return false unless pkmn.respond_to?(:status=)
-    pkmn.status = status
-    if status.to_s == "SLEEP" && pkmn.respond_to?(:statusCount=)
+    real_status = status.respond_to?(:to_sym) ? status.to_sym : status
+    return false if defined?(GameData::Status) && !GameData::Status.try_get(real_status)
+    pkmn.status = real_status
+    if real_status == :SLEEP && pkmn.respond_to?(:statusCount=)
       pkmn.statusCount = 2 + rand(3)
     end
     true

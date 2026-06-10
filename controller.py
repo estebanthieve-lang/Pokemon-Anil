@@ -1697,38 +1697,47 @@ def latest_lottery_status(config):
     lines = []
     if log_path.exists():
         lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-120:]
-    for index, line in enumerate(reversed(lines)):
+    events = []
+    for index, line in enumerate(lines):
         if "pokemon_lottery_status " not in line:
             continue
         detail = line.split("pokemon_lottery_status ", 1)[-1].strip()
+        event_id = f"{index + 1}:{line}"
         if " skipped:" in line:
-            return {
+            events.append({
                 "ok": True,
                 "active": True,
-                "id": f"{len(lines) - index}:{line}",
+                "id": event_id,
                 "line": line,
                 "code": "SKIP",
                 "amount": "0/0",
                 "summary": "",
-            }
+            })
+            continue
         if " failed:" in line:
-            return {
+            events.append({
                 "ok": True,
                 "active": False,
-                "id": f"{len(lines) - index}:{line}",
+                "id": event_id,
                 "line": line,
                 "summary": detail,
-            }
+            })
+            continue
         parts = detail.split(None, 2)
-        return {
+        events.append({
             "ok": True,
             "active": True,
-            "id": f"{len(lines) - index}:{line}",
+            "id": event_id,
             "line": line,
             "code": parts[0] if parts else "",
             "amount": parts[1] if len(parts) > 1 else "",
             "summary": parts[2] if len(parts) > 2 else detail,
-        }
+        })
+    active_events = [event for event in events if event.get("active")]
+    if active_events:
+        latest = dict(active_events[-1])
+        latest["recent"] = active_events[-12:]
+        return latest
     return {"ok": True, "active": False, "id": "", "summary": "", "line": ""}
 
 
