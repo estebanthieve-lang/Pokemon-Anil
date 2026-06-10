@@ -14,8 +14,11 @@ import unicodedata
 import html
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from io import BytesIO
 from pathlib import Path
 from urllib.parse import urlparse
+
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parent
@@ -1740,6 +1743,19 @@ def pokemon_front_sprite_path(member):
     return next((path for path in candidates if path.exists()), None)
 
 
+def pokemon_front_sprite_bytes(path):
+    image = Image.open(path).convert("RGBA")
+    width, height = image.size
+    if height > 0 and width > height:
+        image = image.crop((0, 0, height, height))
+    bbox = image.getbbox()
+    if bbox:
+        image = image.crop(bbox)
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
 class ChaosHandler(BaseHTTPRequestHandler):
     def _send_cors_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -1827,7 +1843,7 @@ class ChaosHandler(BaseHTTPRequestHandler):
             member = next((item for item in payload.get("team", []) if int(item.get("slot") or 0) == int(raw_slot)), None)
             sprite_path = pokemon_front_sprite_path(member or {})
             if sprite_path and sprite_path.exists():
-                self._send_bytes(200, sprite_path.read_bytes(), "image/png", cache=False)
+                self._send_bytes(200, pokemon_front_sprite_bytes(sprite_path), "image/png", cache=False)
             else:
                 self._send_json(404, {"ok": False, "error": "front_sprite_not_found"})
             return
