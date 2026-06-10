@@ -1701,7 +1701,17 @@ def latest_lottery_status(config):
         if "pokemon_lottery_status " not in line:
             continue
         detail = line.split("pokemon_lottery_status ", 1)[-1].strip()
-        if " skipped:" in line or " failed:" in line:
+        if " skipped:" in line:
+            return {
+                "ok": True,
+                "active": True,
+                "id": f"{len(lines) - index}:{line}",
+                "line": line,
+                "code": "SKIP",
+                "amount": "0/0",
+                "summary": "",
+            }
+        if " failed:" in line:
             return {
                 "ok": True,
                 "active": False,

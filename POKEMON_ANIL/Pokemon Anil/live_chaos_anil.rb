@@ -172,11 +172,11 @@ module LiveChaosAnil
 
   def self.status_pool
     [
-      [:PARALYSIS, "PAR", "Paralizados"],
-      [:SLEEP, "DOR", "Dormidos"],
-      [:BURN, "QUE", "Quemados"],
-      [:POISON, "ENV", "Envenenados"],
-      [:FROZEN, "CON", "Congelados"]
+      ["PARALYSIS", "PAR", "Paralizados"],
+      ["SLEEP", "DOR", "Dormidos"],
+      ["BURN", "QUE", "Quemados"],
+      ["POISON", "ENV", "Envenenados"],
+      ["FROZEN", "CON", "Congelados"]
     ]
   end
 
@@ -186,7 +186,7 @@ module LiveChaosAnil
     return false if pkmn.respond_to?(:fainted?) && pkmn.fainted?
     if pkmn.respond_to?(:status)
       current = pkmn.status
-      return false unless current.nil? || current == :NONE || current.to_s.empty?
+      return false unless current.nil? || current == :NONE || current.to_s == "NONE" || current.to_s.empty?
     end
     true
   end
@@ -194,7 +194,7 @@ module LiveChaosAnil
   def self.apply_status(pkmn, status)
     return false unless pkmn.respond_to?(:status=)
     pkmn.status = status
-    if status == :SLEEP && pkmn.respond_to?(:statusCount=)
+    if status.to_s == "SLEEP" && pkmn.respond_to?(:statusCount=)
       pkmn.statusCount = 2 + rand(3)
     end
     true
