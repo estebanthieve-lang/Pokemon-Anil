@@ -1722,6 +1722,24 @@ def latest_lottery_status(config):
     return {"ok": True, "active": False, "id": "", "summary": "", "line": ""}
 
 
+def pokemon_front_sprite_path(member):
+    species = str(member.get("species") or "UNKNOWN").upper()
+    form = int(member.get("form") or 0)
+    shiny = bool(member.get("shiny"))
+    base_dir = ROOT / "POKEMON_ANIL" / "Pokemon Anil" / "Graphics" / "Pokemon"
+    primary = base_dir / ("Front shiny" if shiny else "Front")
+    fallback = base_dir / "Front"
+    candidates = []
+    if form > 0:
+        candidates.append(primary / f"{species}_{form}.png")
+    candidates.append(primary / f"{species}.png")
+    if form > 0:
+        candidates.append(fallback / f"{species}_{form}.png")
+    candidates.append(fallback / f"{species}.png")
+    candidates.append(fallback / "000.png")
+    return next((path for path in candidates if path.exists()), None)
+
+
 class ChaosHandler(BaseHTTPRequestHandler):
     def _send_cors_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -1797,6 +1815,21 @@ class ChaosHandler(BaseHTTPRequestHandler):
                 self._send_bytes(200, sprite_path.read_bytes(), "image/png", cache=False)
             else:
                 self._send_json(404, {"ok": False, "error": "sprite_not_found"})
+            return
+        if parsed.path.startswith("/team-front/") and parsed.path.endswith(".png"):
+            raw_slot = Path(parsed.path).name[:-4]
+            if raw_slot.startswith("slot"):
+                raw_slot = raw_slot[4:]
+            if not raw_slot.isdigit() or not TEAM_JSON_PATH.exists():
+                self._send_json(404, {"ok": False, "error": "front_sprite_not_found"})
+                return
+            payload = json.loads(TEAM_JSON_PATH.read_text(encoding="utf-8", errors="replace"))
+            member = next((item for item in payload.get("team", []) if int(item.get("slot") or 0) == int(raw_slot)), None)
+            sprite_path = pokemon_front_sprite_path(member or {})
+            if sprite_path and sprite_path.exists():
+                self._send_bytes(200, sprite_path.read_bytes(), "image/png", cache=False)
+            else:
+                self._send_json(404, {"ok": False, "error": "front_sprite_not_found"})
             return
         if parsed.path.startswith("/party-ui/") and parsed.path.endswith(".png"):
             name = Path(parsed.path).name
