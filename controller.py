@@ -1702,7 +1702,7 @@ def latest_lottery_status(config):
         if "pokemon_lottery_status " not in line:
             continue
         detail = line.split("pokemon_lottery_status ", 1)[-1].strip()
-        event_id = f"{index + 1}:{line}"
+        event_id = line
         if " skipped:" in line:
             events.append({
                 "ok": True,
@@ -1739,6 +1739,22 @@ def latest_lottery_status(config):
         latest["recent"] = active_events[-12:]
         return latest
     return {"ok": True, "active": False, "id": "", "summary": "", "line": ""}
+
+
+def normalize_team_payload(payload):
+    status_map = {
+        "PARALYSIS": "PAR",
+        "SLEEP": "DOR",
+        "POISON": "ENV",
+        "BURN": "QUE",
+        "FROZEN": "CON",
+        "FROSTBITE": "CON",
+    }
+    for member in payload.get("team", []):
+        raw_status = str(member.get("status") or "").upper()
+        if raw_status in status_map:
+            member["status"] = status_map[raw_status]
+    return payload
 
 
 def pokemon_front_sprite_path(member):
@@ -1812,7 +1828,8 @@ class ChaosHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/team.json":
             if TEAM_JSON_PATH.exists():
-                body = TEAM_JSON_PATH.read_bytes()
+                payload = json.loads(TEAM_JSON_PATH.read_text(encoding="utf-8", errors="replace"))
+                body = json.dumps(normalize_team_payload(payload), ensure_ascii=False).encode("utf-8")
                 self._send_bytes(200, body, "application/json; charset=utf-8")
             else:
                 self._send_json(200, {
