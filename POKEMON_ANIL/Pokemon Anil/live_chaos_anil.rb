@@ -13,6 +13,7 @@ module LiveChaosAnil
   @mutex = Mutex.new
   @started = false
   @file_position = 0
+  @lottery_no_targets_locked = false
 
   def self.log(message)
     File.open(LOG_FILE, "a") { |file| file.puts("#{Time.now} #{message}") } rescue nil
@@ -200,7 +201,28 @@ module LiveChaosAnil
     if real_status == :SLEEP && pkmn.respond_to?(:statusCount=)
       pkmn.statusCount = 2 + rand(3)
     end
+    apply_status_to_active_battler(pkmn, real_status)
     true
+  end
+
+  def self.apply_status_to_active_battler(pkmn, status)
+    return unless defined?($game_temp) && $game_temp
+    battle = $game_temp.respond_to?(:battle) ? $game_temp.battle : nil
+    return unless battle && battle.respond_to?(:battlers)
+    battle.battlers.compact.each do |battler|
+      next unless battler.respond_to?(:pokemon) && battler.pokemon.equal?(pkmn)
+      if battler.respond_to?(:status=)
+        battler.status = status
+      end
+      if status == :SLEEP && battler.respond_to?(:statusCount=)
+        battler.statusCount = pkmn.respond_to?(:statusCount) ? pkmn.statusCount : 2 + rand(3)
+      end
+      if battler.respond_to?(:pbUpdate)
+        battler.pbUpdate(false)
+      end
+    end
+  rescue => e
+    log("pokemon_lottery_status battle refresh skipped: #{e.message}")
   end
 
   def self.pokemon_lottery_status
@@ -208,9 +230,13 @@ module LiveChaosAnil
     raise "party is not ready" unless current_party
     targets = current_party.compact.select { |pkmn| can_receive_status?(pkmn) }
     if targets.empty?
-      log("pokemon_lottery_status skipped: no valid targets")
+      unless @lottery_no_targets_locked
+        log("pokemon_lottery_status skipped: no valid targets")
+        @lottery_no_targets_locked = true
+      end
       return
     end
+    @lottery_no_targets_locked = false
     amount = 1 + rand(3)
     chosen = targets.shuffle.first(amount)
     statuses = status_pool.shuffle
