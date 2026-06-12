@@ -1,4 +1,4 @@
-﻿{
+{
     "server":  {
                    "host":  "127.0.0.1",
                    "port":  8877,
@@ -93,7 +93,7 @@
                                         },
                     "restore_all_live":  {
                                              "type":  "file_command",
-                                             "command":  "heal_party",
+                                             "command":  "restore_party",
                                              "timeout_ms":  1500
                                          },
                     "add_random_ability_capsule_live":  {

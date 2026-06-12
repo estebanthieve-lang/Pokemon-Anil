@@ -1,7 +1,7 @@
 {
   "gameId": "pokemon-anil-live",
   "name": "Pokemon Anil Live",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "saveRoot": "%APPDATA%\\Pokemon Anil Live",
   "backupRoot": "%APPDATA%\\Pokemon Anil Live\\backups",
   "updateBackupRoot": "%APPDATA%\\Pokemon Anil Live\\backups\\updates",
@@ -9,7 +9,9 @@
     "logs",
     "MeterPartidasGuardadas"
   ],
-  "deletePaths": [],
+  "deletePaths": [
+    "POKEMON_ANIL/Pokemon Anil/Scripts/Postload/99_live_chaos_anil.rb"
+  ],
   "mirrorPaths": [],
   "mergeConfigFiles": [
     "config/actions_anil.json"
@@ -26,6 +28,8 @@
     "RECUPERAR PARTIDAS GUARDADAS.cmd",
     "MeterPartidasGuardadas",
     "runtime/actualizar_juego.ps1",
-    "game.config.json"
+    "game.config.json",
+    "AGENTS.md",
+    "CHANGELOG_POKEMON_ANIL_LIVE.md"
   ]
 }
