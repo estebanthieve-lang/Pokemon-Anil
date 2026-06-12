@@ -3,13 +3,13 @@
   "gameId": "pokemon-anil-live",
   "name": "Pokemon Anil Live",
   "description": "Runtime limpio para conectar Pokemon Anil con una base tipo Tikfinity por HTTP.",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "endpoint": "POST http://127.0.0.1:8877/event",
   "updates": {
     "githubRepo": "estebanthieve-lang/Pokemon-Anil",
     "latestManifestUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/game-manifest.json",
     "releaseUrl": "https://github.com/estebanthieve-lang/Pokemon-Anil/releases/latest",
-    "downloadUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/updates/pokemon-anil-update-0.1.17.zip"
+    "downloadUrl": "https://raw.githubusercontent.com/estebanthieve-lang/Pokemon-Anil/main/updates/pokemon-anil-update-0.1.18.zip"
   },
   "eventBus": {
     "protocol": "http",
