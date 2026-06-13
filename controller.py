@@ -743,6 +743,14 @@ TEAM_SLOT_OVERLAY_HTML = """<!doctype html>
   <title>Pokemon Anil Live Slot Overlay</title>
   <style>
     * { box-sizing: border-box; }
+    @keyframes pokemon-idle {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(0, -3px, 0) scale(1.025); }
+    }
+    @keyframes pokemon-frames {
+      from { transform: translateX(0); }
+      to { transform: translateX(var(--sheet-shift, 0px)); }
+    }
     html, body {
       width: 100%;
       height: 100%;
@@ -772,19 +780,32 @@ TEAM_SLOT_OVERLAY_HTML = """<!doctype html>
     }
     .sprite-box {
       position: absolute;
-      left: 10px;
-      top: 9px;
-      width: 58px;
-      height: 58px;
+      left: 4px;
+      top: 4px;
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
       overflow: hidden;
       image-rendering: pixelated;
     }
+    .sprite-frame {
+      width: 68px;
+      height: 68px;
+      overflow: hidden;
+      animation: pokemon-idle 1.25s steps(2, end) infinite;
+      transform-origin: center bottom;
+    }
     .sprite-box img {
-      height: 58px;
+      height: 68px;
       width: auto;
       max-width: none;
+      object-fit: unset;
       image-rendering: pixelated;
+      will-change: transform;
     }
+    .slot.empty .sprite-frame,
+    .slot.empty .sprite-box img { animation: none; }
     .name {
       position: absolute;
       left: 75px;
@@ -853,6 +874,8 @@ TEAM_SLOT_OVERLAY_HTML = """<!doctype html>
     const slotEl = document.getElementById('slot');
     const slotMatch = location.pathname.match(/\\/team-slot\\/(\\d+)/);
     const wantedSlot = Math.max(1, Math.min(6, Number(slotMatch ? slotMatch[1] : 1)));
+    const animateFrames = new URLSearchParams(location.search).get('anim') === 'frames';
+    let lastIdentity = '';
 
     function clean(value) {
       return String(value || '').replace(/[<>&]/g, '');
@@ -862,7 +885,26 @@ TEAM_SLOT_OVERLAY_HTML = """<!doctype html>
       const total = Math.max(1, Number(mon.totalhp || 0));
       return Math.max(0, Math.min(100, Math.round((hp / total) * 100)));
     }
+    function setupSpriteImage(img) {
+      const frame = img.closest('.sprite-frame');
+      if (!frame || !img.naturalWidth || !img.naturalHeight) return;
+      const size = Math.max(1, Math.round(Math.min(frame.clientWidth || 68, frame.clientHeight || 68)));
+      const frames = animateFrames ? Math.max(1, Math.floor(img.naturalWidth / img.naturalHeight)) : 1;
+      img.style.height = `${size}px`;
+      img.style.width = 'auto';
+      if (frames > 1) {
+        const steps = Math.max(1, frames - 1);
+        const duration = Math.max(1.2, Math.min(5, frames / 18));
+        img.style.setProperty('--sheet-shift', `-${steps * size}px`);
+        img.style.animation = `pokemon-frames ${duration.toFixed(2)}s steps(${steps}, end) infinite`;
+      } else {
+        img.style.animation = 'none';
+      }
+    }
     function renderEmpty(text = 'VACIO') {
+      const identity = `empty:${text}`;
+      if (identity === lastIdentity) return;
+      lastIdentity = identity;
       slotEl.className = 'slot empty';
       slotEl.innerHTML = `
         <div class="sprite-box"></div>
@@ -878,15 +920,33 @@ TEAM_SLOT_OVERLAY_HTML = """<!doctype html>
       const fainted = !!mon.fainted || Number(mon.hp || 0) <= 0;
       const name = clean(mon.name || mon.species || `Slot ${wantedSlot}`);
       const level = clean(mon.level || 0);
-      const sprite = clean(mon.sprite || `/team-sprite/${wantedSlot}.png`);
+      const iconSprite = clean(mon.sprite || `/team-sprite/${wantedSlot}.png`);
+      const sprite = `/team-front/${wantedSlot}.png`;
+      const identity = [wantedSlot, name, clean(mon.species), level, iconSprite, fainted].join('|');
       slotEl.className = `slot ${fainted ? 'empty' : ''}`;
-      slotEl.innerHTML = `
-        <div class="sprite-box"><img src="${sprite}?t=${Date.now()}" alt=""></div>
+      if (identity !== lastIdentity) {
+        lastIdentity = identity;
+        slotEl.innerHTML = `
+        <div class="sprite-box"><div class="sprite-frame"><img src="${sprite}?v=${encodeURIComponent(identity)}" alt="" data-fallback="${iconSprite}" onload="setupSpriteImage(this)" onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback}else{this.style.display='none'}"></div></div>
         <div class="name">${name}</div>
         <div class="level">Nv.${level}</div>
         <div class="hpbar"><div class="hpfill ${hpClass}" style="width:${pct}%"></div></div>
         <div class="ps">PS ${pct}%</div>
         <div class="status">${fainted ? 'DEBIL' : 'OK'}</div>`;
+        requestAnimationFrame(() => {
+          const img = slotEl.querySelector('.sprite-box img');
+          if (img && img.complete) setupSpriteImage(img);
+        });
+      }
+      const fill = slotEl.querySelector('.hpfill');
+      const ps = slotEl.querySelector('.ps');
+      const status = slotEl.querySelector('.status');
+      if (fill) {
+        fill.className = `hpfill ${hpClass}`;
+        fill.style.width = `${pct}%`;
+      }
+      if (ps) ps.textContent = `PS ${pct}%`;
+      if (status) status.textContent = fainted ? 'DEBIL' : 'OK';
     }
     async function refresh() {
       try {

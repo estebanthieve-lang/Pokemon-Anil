@@ -1,147 +1,147 @@
-[
-  {
-    "id": "add_potion_live",
-    "label": "+1 Poción",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\add_potion_live.png"
-  },
-  {
-    "id": "remove_potion_live",
-    "label": "-1 Poción",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\remove_potion_live.png"
-  },
-  {
-    "id": "add_pokeball_live",
-    "label": "+1 Poké Ball",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\add_pokeball_live.png"
-  },
-  {
-    "id": "remove_pokeball_live",
-    "label": "-1 Poké Ball",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\remove_pokeball_live.png"
-  },
-  {
-    "id": "add_revive_live",
-    "label": "+1 Revivir",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\add_revive_live.png"
-  },
-  {
-    "id": "remove_revive_live",
-    "label": "-1 Revivir",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\remove_revive_live.png"
-  },
-  {
-    "id": "heal_party_live",
-    "label": "Curar Pokémon",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\heal_party_live.png"
-  },
-  {
-    "id": "party_hp_1_live",
-    "label": "Dejar Pokémon a 1 PS",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\party_hp_1_live.png"
-  },
-  {
-    "id": "restore_all_live",
-    "label": "Restaurar todo",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\restore_all_live.png"
-  },
-  {
-    "id": "add_random_ability_capsule_live",
-    "label": "+1 Random de habilidad",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\add_random_ability_capsule_live.png"
-  },
-  {
-    "id": "add_relic_crown_live",
-    "label": "+1 Corona Antigua",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\add_relic_crown_live.png"
-  },
-  {
-    "id": "revive_random_pokemon_live",
-    "label": "Revivir 1 Pokémon aleatorio",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\revive_random_pokemon_live.png"
-  },
-  {
-    "id": "add_master_ball_live",
-    "label": "+1 Master Ball",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\add_master_ball_live.png"
-  },
-  {
-    "id": "add_shiny_potion_live",
-    "label": "+1 Poción Brillante",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\add_shiny_potion_live.png"
-  },
-  {
-    "id": "next_encounter_legendary_live",
-    "label": "Próximo encuentro legendario",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\next_encounter_legendary_live.png"
-  },
-  {
-    "id": "faint_random_pokemon_live",
-    "label": "Debilitar 1 Pokémon aleatorio",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\faint_random_pokemon_live.png"
-  },
-  {
-    "id": "press_c_three_times_live",
-    "label": "Pulsar acción 3 veces",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\press_c_three_times_live.png"
-  },
-  {
-    "id": "party_hp_50_percent_live",
-    "label": "Todos a 50% de vida",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\party_hp_50_percent_live.png"
-  },
-  {
-    "id": "restart_save_live",
-    "label": "Reiniciar partida desde cero",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\restart_save_live.png"
-  },
-  {
-    "id": "money_zero_live",
-    "label": "Dinero a 0",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\money_zero_live.png"
-  },
-  {
-    "id": "remove_all_pokeballs_live",
-    "label": "Eliminar todas las Poké Balls",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\remove_all_pokeballs_live.png"
-  },
-  {
-    "id": "force_battle_switch_random_live",
-    "label": "Cambiar Pokémon en combate",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\force_battle_switch_random_live.png"
-  },
-  {
-    "id": "shuffle_party_order_live",
-    "label": "Barajar equipo",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\shuffle_party_order_live.png"
-  },
-  {
-    "id": "replace_party_with_random_pokedex_safe_live",
-    "label": "Cambiar por Pokémon random de Pokédex",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\replace_party_with_random_pokedex_safe_live.png"
-  },
-  {
-    "id": "gift_random_pokedex_pokemon_live",
-    "label": "Regalar Pokémon random",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\gift_random_pokedex_pokemon_live.png"
-  },
-  {
-    "id": "chispazo_exp_live",
-    "label": "Guardar Chispazo EXP",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\chispazo_exp_live.png"
-  },
-  {
-    "id": "ruleta_nivel_live",
-    "label": "Guardar Ruleta Nivel",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\ruleta_nivel_live.png"
-  },
-  {
-    "id": "moneda_suerte_live",
-    "label": "Guardar Moneda Suerte",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\moneda_suerte_live.png"
-  },
-  {
-    "id": "abrir_bolsa_live",
-    "label": "Abrir Bolsa Live (remoto)",
-    "image": "C:\\Users\\usuario\\Music\\Pokemon Anil Live - PARA COMPARTIR\\assets\\acciones_png\\abrir_bolsa_live.png"
-  }
+﻿[
+    {
+        "id":  "add_potion_live",
+        "label":  "+1 PociÃ³n",
+        "image":  "assets/acciones_png/add_potion_live.png"
+    },
+    {
+        "id":  "remove_potion_live",
+        "label":  "-1 PociÃ³n",
+        "image":  "assets/acciones_png/remove_potion_live.png"
+    },
+    {
+        "id":  "add_pokeball_live",
+        "label":  "+1 PokÃ© Ball",
+        "image":  "assets/acciones_png/add_pokeball_live.png"
+    },
+    {
+        "id":  "remove_pokeball_live",
+        "label":  "-1 PokÃ© Ball",
+        "image":  "assets/acciones_png/remove_pokeball_live.png"
+    },
+    {
+        "id":  "add_revive_live",
+        "label":  "+1 Revivir",
+        "image":  "assets/acciones_png/add_revive_live.png"
+    },
+    {
+        "id":  "remove_revive_live",
+        "label":  "-1 Revivir",
+        "image":  "assets/acciones_png/remove_revive_live.png"
+    },
+    {
+        "id":  "heal_party_live",
+        "label":  "Curar PokÃ©mon",
+        "image":  "assets/acciones_png/heal_party_live.png"
+    },
+    {
+        "id":  "party_hp_1_live",
+        "label":  "Dejar PokÃ©mon a 1 PS",
+        "image":  "assets/acciones_png/party_hp_1_live.png"
+    },
+    {
+        "id":  "restore_all_live",
+        "label":  "Restaurar todo",
+        "image":  "assets/acciones_png/restore_all_live.png"
+    },
+    {
+        "id":  "add_random_ability_capsule_live",
+        "label":  "+1 Random de habilidad",
+        "image":  "assets/acciones_png/add_random_ability_capsule_live.png"
+    },
+    {
+        "id":  "add_relic_crown_live",
+        "label":  "+1 Corona Antigua",
+        "image":  "assets/acciones_png/add_relic_crown_live.png"
+    },
+    {
+        "id":  "revive_random_pokemon_live",
+        "label":  "Revivir 1 PokÃ©mon aleatorio",
+        "image":  "assets/acciones_png/revive_random_pokemon_live.png"
+    },
+    {
+        "id":  "add_master_ball_live",
+        "label":  "+1 Master Ball",
+        "image":  "assets/acciones_png/add_master_ball_live.png"
+    },
+    {
+        "id":  "add_shiny_potion_live",
+        "label":  "+1 PociÃ³n Brillante",
+        "image":  "assets/acciones_png/add_shiny_potion_live.png"
+    },
+    {
+        "id":  "next_encounter_legendary_live",
+        "label":  "PrÃ³ximo encuentro legendario",
+        "image":  "assets/acciones_png/next_encounter_legendary_live.png"
+    },
+    {
+        "id":  "faint_random_pokemon_live",
+        "label":  "Debilitar 1 PokÃ©mon aleatorio",
+        "image":  "assets/acciones_png/faint_random_pokemon_live.png"
+    },
+    {
+        "id":  "press_c_three_times_live",
+        "label":  "Pulsar acciÃ³n 3 veces",
+        "image":  "assets/acciones_png/press_c_three_times_live.png"
+    },
+    {
+        "id":  "party_hp_50_percent_live",
+        "label":  "Todos a 50% de vida",
+        "image":  "assets/acciones_png/party_hp_50_percent_live.png"
+    },
+    {
+        "id":  "restart_save_live",
+        "label":  "Reiniciar partida desde cero",
+        "image":  "assets/acciones_png/restart_save_live.png"
+    },
+    {
+        "id":  "money_zero_live",
+        "label":  "Dinero a 0",
+        "image":  "assets/acciones_png/money_zero_live.png"
+    },
+    {
+        "id":  "remove_all_pokeballs_live",
+        "label":  "Eliminar todas las PokÃ© Balls",
+        "image":  "assets/acciones_png/remove_all_pokeballs_live.png"
+    },
+    {
+        "id":  "force_battle_switch_random_live",
+        "label":  "Cambiar PokÃ©mon en combate",
+        "image":  "assets/acciones_png/force_battle_switch_random_live.png"
+    },
+    {
+        "id":  "shuffle_party_order_live",
+        "label":  "Barajar equipo",
+        "image":  "assets/acciones_png/shuffle_party_order_live.png"
+    },
+    {
+        "id":  "replace_party_with_random_pokedex_safe_live",
+        "label":  "Cambiar por PokÃ©mon random de PokÃ©dex",
+        "image":  "assets/acciones_png/replace_party_with_random_pokedex_safe_live.png"
+    },
+    {
+        "id":  "gift_random_pokedex_pokemon_live",
+        "label":  "Regalar PokÃ©mon random",
+        "image":  "assets/acciones_png/gift_random_pokedex_pokemon_live.png"
+    },
+    {
+        "id":  "chispazo_exp_live",
+        "label":  "Guardar Chispazo EXP",
+        "image":  "assets/acciones_png/chispazo_exp_live.png"
+    },
+    {
+        "id":  "ruleta_nivel_live",
+        "label":  "Guardar Ruleta Nivel",
+        "image":  "assets/acciones_png/ruleta_nivel_live.png"
+    },
+    {
+        "id":  "moneda_suerte_live",
+        "label":  "Guardar Moneda Suerte",
+        "image":  "assets/acciones_png/moneda_suerte_live.png"
+    },
+    {
+        "id":  "abrir_bolsa_live",
+        "label":  "Abrir Bolsa Live (remoto)",
+        "image":  "assets/acciones_png/abrir_bolsa_live.png"
+    }
 ]
