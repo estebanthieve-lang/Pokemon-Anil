@@ -1,0 +1,17 @@
+*.rxdata
+!POKEMON_ANIL/Pokemon Anil/Data/*.rxdata
+*.bak
+*.tmp
+*.log
+__pycache__/
+logs/
+backups/
+update-backups/
+live_chaos_queue.txt
+live_chaos_log.txt
+live_chaos_save_backups/
+POKEMON_ANIL_LIVE_FINAL*.zip
+AGENTS.md
+CHANGELOG_POKEMON_ANIL_LIVE.md
+PLAN_*.md
+README_DISTRIBUCION_Y_ACTUALIZACION.md
